@@ -1,0 +1,20 @@
+
+## Trends
+
+```{r}
+#| eval: true
+#| echo: false
+#| warnings: false
+#| messages: false
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+load(file='data/WEIRD_data.Rdata')
+```
+
+```{r}
+#| eval: true
+#| echo: true
+source('scripts/trends.R')                 # Visualise various trends (Figure 2)
+```
+

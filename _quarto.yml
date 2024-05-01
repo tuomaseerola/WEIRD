@@ -1,0 +1,32 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - 01_data_description.qmd
+    - 02_summary_results.qmd
+    - 03_maps.qmd
+    - 04_trends.qmd
+    - 05_keywords.qmd
+website:
+  title: "WEIRD"
+#  site-url: "https://tuomaseerola.github.io/WEIRD/index.html"
+  sidebar:
+    style: "docked"
+    contents:
+      - section: "Data"
+        contents:
+          - 01_data_description.qmd
+          - 02_summary_results.qmd
+      - section: "Visualisations"
+        contents:
+          - 03_maps.qmd
+          - 04_trends.qmd
+          - 05_keywords.qmd   
+  page-navigation: true
+  back-to-top-navigation: true
+format:
+  html:
+    theme: yeti # lumen, pulse, materia, yeti, zephyr
+    css: styles.css
+    toc: true

@@ -1,0 +1,74 @@
+# Data pre-processing
+
+## Libraries
+
+```{r}
+#| eval: true
+#| echo: true
+#| warnings: false
+#| messages: false
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+```
+
+Take the manually annotated data.
+
+```{r}
+#| eval: true
+#| echo: true
+#| output: asis
+
+rm(list=ls())
+d <- read.csv('data/WEIRD part cleaned Feb24.csv',header = TRUE)
+knitr::kable(d[1:5,1:5])
+```
+
+## Preprocess
+
+Add and alter variables in the data.
+
+```{r}
+#| eval: true
+#| echo: true
+
+source('scripts/preprocess.R') # Preprocess data (includes WEIRD country index)
+```
+
+### Description of data frames
+
+* `d` is the original data with `r nrow(d)` observations. Each row refers to a study (not article).
+
+* `D` is a version of the original data containing empirical/human studies with `r nrow(D)` observations. Each row refers to a study (not article).
+
+* `df` contains samples within studies with `r nrow(df)` observations.
+
+* `DF` contains samples with redundant samples removed. It has `r nrow(DF)` observations.
+
+Within the data, there are `r sum(df$study_id=='study1' & df$sample_id=='sample0')` articles.
+
+We have created a identifier for articles (`paper_id`), studies (`study_id`), and samples (`sample_id`) and a unique identifier which combines these (`paper_id_study_id`)
+
+### Description of variables
+
+* `CountryDataCollected_WEOG` is based on WEIRD country index derived from Krys et al., (2014).
+* `FirstAuthorCountry_WEOG` is based on WEIRD country index derived from Krys et al., (2014).
+* `gender_balance` is the proportion of females in the samples
+
+
+```{r}
+#| eval: true
+#| echo: true
+names(d)
+
+```
+
+## Save (if necessary)
+
+```{r}
+#| output: asis
+needs_saving <- FALSE
+if(needs_saving==TRUE){
+  save(d,df,D,DF,file='data/WEIRD_data.Rdata')
+}
+```

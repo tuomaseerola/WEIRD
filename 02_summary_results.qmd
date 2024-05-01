@@ -1,0 +1,21 @@
+
+## Summaries
+
+```{r}
+#| eval: true
+#| echo: false
+#| warnings: false
+#| messages: false
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+```
+
+```{r}
+#| eval: true
+#| echo: true
+load(file='data/WEIRD_data.Rdata')
+
+source('scripts/table1.R')                 # creates numbers for Table 1
+source('scripts/report_numbers_for_MS.R')  # create numbers for the ms
+```

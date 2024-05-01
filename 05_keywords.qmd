@@ -1,0 +1,12 @@
+
+## Keywords
+
+```{r}
+#| eval: true
+#| echo: true
+
+source('scripts/keyword_analysis.R')            # creates figure  
+source('scripts/keyword_analysis_multiple.R')   # explores multiple divisions 
+
+```
+

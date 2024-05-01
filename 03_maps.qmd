@@ -1,0 +1,22 @@
+
+## Maps
+
+```{r}
+#| eval: true
+#| echo: false
+#| warnings: false
+#| messages: false
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+```
+
+```{r}
+#| eval: true
+#| echo: true
+load(file='data/WEIRD_data.Rdata')
+
+source('scripts/preprocess_for_maps.R')    # prepare country information  
+source('scripts/WEIRD_map.R')              # Extra plot
+source('scripts/visualise_on_map.R')       # Figure 1 (4 sub-plots)
+```
