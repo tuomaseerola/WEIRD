@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02_summary_results.html" rel="next">
+<link href="./04_trends.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -115,7 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_data_description.html">Data</a></li><li class="breadcrumb-item"><a href="./01_data_description.html">Data pre-processing</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_maps.html">Visualisations</a></li><li class="breadcrumb-item"><a href="./05_keywords.html">Keywords</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -151,7 +151,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01_data_description.html" class="sidebar-item-text sidebar-link active">
+  <a href="./01_data_description.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Data pre-processing</span></a>
   </div>
 </li>
@@ -186,7 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05_keywords.html" class="sidebar-item-text sidebar-link">
+  <a href="./05_keywords.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Keywords</span></a>
   </div>
 </li>
@@ -202,16 +202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link active" data-scroll-target="#data-pre-processing">Data pre-processing</a>
-  <ul class="collapse">
-  <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
-  <li><a href="#preprocess" id="toc-preprocess" class="nav-link" data-scroll-target="#preprocess">Preprocess</a>
-  <ul class="collapse">
-  <li><a href="#description-of-data-frames" id="toc-description-of-data-frames" class="nav-link" data-scroll-target="#description-of-data-frames">Description of data frames</a></li>
-  <li><a href="#description-of-variables" id="toc-description-of-variables" class="nav-link" data-scroll-target="#description-of-variables">Description of variables</a></li>
-  </ul></li>
-  <li><a href="#save-if-necessary" id="toc-save-if-necessary" class="nav-link" data-scroll-target="#save-if-necessary">Save (if necessary)</a></li>
-  </ul></li>
+  <li><a href="#keywords" id="toc-keywords" class="nav-link active" data-scroll-target="#keywords">Keywords</a></li>
   </ul>
 </nav>
     </div>
@@ -221,191 +212,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="data-pre-processing" class="level1">
-<h1>Data pre-processing</h1>
-<section id="libraries" class="level2">
-<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<section id="keywords" class="level2">
+<h2 class="anchored" data-anchor-id="keywords">Keywords</h2>
+<p>Create Figure 3 showing 6 rankings of keywords across key variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The manually annotated data titled <code>data/WEIRD coding final corr names.csv</code> was cleaned through process captured in <code>weird data cleaning.R</code> script.</p>
-<p>Here we take this manually annotated and cleaned data, <code>data/WEIRD part cleaned Feb24.csv</code> and in the next step, add elements to it (WEIRD, non-WEIRD country codes, paper, study, sample ids, etc.).</p>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/WEIRD part cleaned Feb24.csv'</span>,<span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(d[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="table">
-<colgroup>
-<col style="width: 61%">
-<col style="width: 2%">
-<col style="width: 10%">
-<col style="width: 13%">
-<col style="width: 11%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">PaperTitle</th>
-<th style="text-align: right;">Year</th>
-<th style="text-align: left;">Journal</th>
-<th style="text-align: left;">FirstAuthorName_cleaned</th>
-<th style="text-align: left;">FirstAuthorCountry</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Corroborating external observation by cognitve data in the description and modelling of traditional music</td>
-<td style="text-align: right;">2010</td>
-<td style="text-align: left;">Musicae Scientiae</td>
-<td style="text-align: left;">Arom, Simha</td>
-<td style="text-align: left;">France</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Looking into the eyes of a conductor performing Lerdahl’s “Time after Time”</td>
-<td style="text-align: right;">2010</td>
-<td style="text-align: left;">Musicae Scientiae</td>
-<td style="text-align: left;">Bigand, Emmanuel</td>
-<td style="text-align: left;">France</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Auditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna</td>
-<td style="text-align: right;">2010</td>
-<td style="text-align: left;">Musicae Scientiae</td>
-<td style="text-align: left;">Adesi, Anna Rita</td>
-<td style="text-align: left;">Italy</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">The Difficulty of discerning between composed and improvised nusic</td>
-<td style="text-align: right;">2010</td>
-<td style="text-align: left;">Musicae Scientiae</td>
-<td style="text-align: left;">Lehmann, Andreas C.</td>
-<td style="text-align: left;">Germany</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Musical Parameters and Children’s Images of motion</td>
-<td style="text-align: right;">2010</td>
-<td style="text-align: left;">Musicae Scientiae</td>
-<td style="text-align: left;">Eitan, Zohar</td>
-<td style="text-align: left;">Israel</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="preprocess" class="level2">
-<h2 class="anchored" data-anchor-id="preprocess">Preprocess</h2>
-<p>Add several variables to the data (explanations below). This process creates four data frames used in subsequent analyses.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/preprocess.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Preprocessing.....
-Number of coded studies: 1622
-Unique first authors: 1021
-1. Studies with samples (human studies)
-2. Studies with music (music studies)
-3. Create paper_ids 
-...Unique studies: 1360
-4. Add study ids
-5. Expand into samples....Loop across papers with multiple studies to get multiple samples (;)
-6. Clean variables 
-7. Combine expanded and original data 
-8. Convert online studies based on SamplePrimaryCountryofOrigin
-6. Handle online origin
-9. Create UIDs
-10. Gender balance indicators
-11. WERID indicator for countries
-Using WEIRD_country_index: Krys
-11. Calculate weighted mean and sd age 
-12. Check counts of the expanded data frame
-...Original: 1622 obs
-...Expanded: 1743 obs
-...Within expanded:1622
-...Number of papers (study1 and sample0): 1360
-Final dataframes:
- D = human studies:
-1532
- DF = human studies with samples:
-1653
- Unique samples in DF: 1589
- DF = human studies with distinct samples:
-1589
-15. Clean up</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/keyword_analysis_multiple_ver2.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="05_keywords_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
 </div>
 </div>
-<section id="description-of-data-frames" class="level3">
-<h3 class="anchored" data-anchor-id="description-of-data-frames">Description of data frames</h3>
-<ul>
-<li><p><code>d</code> is the original data with 1622 observations. Each row refers to a study (not article).</p></li>
-<li><p><code>D</code> is a version of the original data containing empirical/human studies with 1532 observations. Each row refers to a study (not article).</p></li>
-<li><p><code>df</code> contains samples within studies with 1743 observations.</p></li>
-<li><p><code>DF</code> contains samples with redundant samples removed. It has 1589 observations.</p></li>
-</ul>
-<p>Within the data, there are 1360 articles.</p>
-<p>We have created a identifier for articles (<code>paper_id</code>), studies (<code>study_id</code>), and samples (<code>sample_id</code>) and a unique identifier which combines these (<code>paper_id_study_id</code>).</p>
-</section>
-<section id="description-of-variables" class="level3">
-<h3 class="anchored" data-anchor-id="description-of-variables">Description of variables</h3>
-<ul>
-<li><code>CountryDataCollected_WEOG</code> is based on WEIRD country index derived from Krys et al., (2014).</li>
-<li><code>FirstAuthorCountry_WEOG</code> is based on WEIRD country index derived from Krys et al., (2014).</li>
-<li><code>gender_balance</code> is the proportion of females in the samples</li>
-<li>… (to be continued)</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "PaperTitle"                                  
- [2] "Year"                                        
- [3] "Journal"                                     
- [4] "FirstAuthorName_cleaned"                     
- [5] "FirstAuthorCountry"                          
- [6] "CountryDataCollected"                        
- [7] "SamplePrimaryCountryofOrigin"                
- [8] "Ethnicity"                                   
- [9] "SampleSize"                                  
-[10] "SampleAgeMean"                               
-[11] "SampleAgeSD"                                 
-[12] "FemaleParticipantsNumber"                    
-[13] "MaleParticipantsNumber"                      
-[14] "SampleMusicianshipDescription"               
-[15] "SamplingMethodDescription"                   
-[16] "SampleOtherDescription"                      
-[17] "MeanYearsEducation"                          
-[18] "MusicPrimaryGenre"                           
-[19] "MusicOriginCountry"                          
-[20] "MusicSource"                                 
-[21] "Comments"                                    
-[22] "CoderName"                                   
-[23] "Keywords"                                    
-[24] "humansample"                                 
-[25] "musicstudies"                                
-[26] "paper_id"                                    
-[27] "study_id"                                    
-[28] "paper_id_study_id"                           
-[29] "sample_id"                                   
-[30] "sample_size"                                 
-[31] "sample_agemean"                              
-[32] "sample_agesd"                                
-[33] "sample_female"                               
-[34] "sample_male"                                 
-[35] "sample_country_data_collected"               
-[36] "sample_sampling_method_description"          
-[37] "SamplePrimaryCountryofOrigin_online_inferred"
-[38] "gender_balance"                              
-[39] "SampleSizeAggregated"                        
-[40] "CountryDataCollected_WEOG"                   
-[41] "FirstAuthorCountry_WEOG"                     </code></pre>
 </div>
-</div>
-</section>
-</section>
-<section id="save-if-necessary" class="level2">
-<h2 class="anchored" data-anchor-id="save-if-necessary">Save (if necessary)</h2>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>needs_saving <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(needs_saving<span class="sc">==</span><span class="cn">TRUE</span>){</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(d,df,D,DF,<span class="at">file=</span><span class="st">'data/WEIRD_data.Rdata'</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -820,11 +641,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./04_trends.html" class="pagination-link" aria-label="Trends">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Trends</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02_summary_results.html" class="pagination-link" aria-label="Summaries">
-        <span class="nav-page-text">Summaries</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

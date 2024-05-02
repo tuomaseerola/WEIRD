@@ -5,34 +5,34 @@
 ```{r}
 #| eval: true
 #| echo: true
-#| warnings: false
-#| messages: false
+#| warning: false
+#| error: false
+#| output: false
 library(tidyverse)
 library(stringr)
 library(ggplot2)
 ```
 
-Take the manually annotated data.
+The manually annotated data titled `data/WEIRD coding final corr names.csv` was cleaned through process captured in `weird data cleaning.R` script.
+
+Here we take this manually annotated and cleaned data, `data/WEIRD part cleaned Feb24.csv` and in the next step, add elements to it (WEIRD, non-WEIRD country codes, paper, study, sample ids, etc.).
 
 ```{r}
 #| eval: true
 #| echo: true
 #| output: asis
-
-rm(list=ls())
 d <- read.csv('data/WEIRD part cleaned Feb24.csv',header = TRUE)
 knitr::kable(d[1:5,1:5])
 ```
 
 ## Preprocess
 
-Add and alter variables in the data.
+Add several variables to the data (explanations below). This process creates four data frames used in subsequent analyses.
 
 ```{r}
 #| eval: true
 #| echo: true
-
-source('scripts/preprocess.R') # Preprocess data (includes WEIRD country index)
+source('scripts/preprocess.R')
 ```
 
 ### Description of data frames
@@ -47,13 +47,14 @@ source('scripts/preprocess.R') # Preprocess data (includes WEIRD country index)
 
 Within the data, there are `r sum(df$study_id=='study1' & df$sample_id=='sample0')` articles.
 
-We have created a identifier for articles (`paper_id`), studies (`study_id`), and samples (`sample_id`) and a unique identifier which combines these (`paper_id_study_id`)
+We have created a identifier for articles (`paper_id`), studies (`study_id`), and samples (`sample_id`) and a unique identifier which combines these (`paper_id_study_id`).
 
 ### Description of variables
 
 * `CountryDataCollected_WEOG` is based on WEIRD country index derived from Krys et al., (2014).
 * `FirstAuthorCountry_WEOG` is based on WEIRD country index derived from Krys et al., (2014).
 * `gender_balance` is the proportion of females in the samples
+* ... (to be continued)
 
 
 ```{r}

@@ -1,12 +1,29 @@
+---
+format: 
+  html:
+    fig-width: 14
+    fig-height: 10
+---
 
 ## Keywords
 
 ```{r}
 #| eval: true
+#| echo: false
+#| warning: false
+#| output: false
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+load(file='data/WEIRD_data.Rdata')
+```
+
+Create Figure 3 showing 6 rankings of keywords across key variables.
+
+```{r}
+#| eval: true
 #| echo: true
-
-source('scripts/keyword_analysis.R')            # creates figure  
-source('scripts/keyword_analysis_multiple.R')   # explores multiple divisions 
-
+#| warning: false
+source('scripts/keyword_analysis_multiple_ver2.R')
 ```
 

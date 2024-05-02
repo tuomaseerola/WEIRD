@@ -1,11 +1,5 @@
-# WEOG_map
-#country_mean_age <- dplyr::summarise(group_by(df,sample_country_data_collected),s = mean(sample_agemean,na.rm = T))
-#country_freq_samples<-country_mean_age
-# idea: gender_balance
-
 saveplots <- FALSE
 
-nrow(d)
 country_freq_samples <- dplyr::summarise(group_by(d,CountryDataCollected,CountryDataCollected_WEOG),s = n())
 head(country_freq_samples)
 country_freq_samples$s<-0
@@ -50,9 +44,4 @@ g5 <- ggplot(data = map2_eqea) +
   ylab('')+
   theme_minimal(base_size = 15,base_family = 'Times')+
   theme(plot.title = element_text(hjust = 0.5))
-g5  
-
-if(saveplots==TRUE){
-  ggsave(filename = 'WEIRD_index_globe.pdf',g5,device = 'pdf',height = 9,width = 14)
-}
-
+print(g5)  

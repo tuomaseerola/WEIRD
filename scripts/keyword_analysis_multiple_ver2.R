@@ -3,16 +3,6 @@
 # T. Eerola, 23/3/2024
 # Status: Complete
 
-####### TO DO
-#I've only just thought of this when I saw this note I wrote here. We currently analyse the keywords in 
-# relation to Western/non-Western countries. Could we consider also analysing by other demographic factors? 
-#   For instance, certain subtopics are more likely than others to be investigated across a wide age range, 
-# to be investigated only in university samples, to be investigated more in musicians than non-musicians, 
-# and using more Western music stimuli. Do you think we could explore these options a bit more? This also 
-# relates to what we discussed about trying to make the narrative based on diversity more broadly and not just 
-# 'West vs the rest'
-#
-
 plotflag <- FALSE
 
 ## remove studies, keep articles (to avoid duplicating keywords)
@@ -156,210 +146,95 @@ FROM<-2
 TO<-26
 head(x1)
 g1a<-ggplot(data = x1[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = .02)+
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
   coord_flip() +
   theme(text = element_text(size=16)) +
   scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.5)) + 
-  scale_fill_brewer(palette="Dark2")+
+  scale_fill_grey()+
   ylab("% WEIRD")+
   xlab("Keyword (ranked)")+
-  theme_linedraw(base_size = 15)
-g1a
-
-g1b<-ggplot(data = x1[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = KW,size = Freq)) + 
-  geom_text(nudge_y = .02,show.legend = FALSE,hjust=0)+
-#  geom_point()+
-  coord_flip() +
-  theme(text = element_text(size=16)) +
-  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(0,.55)) + 
-  scale_fill_brewer(palette="Dark2")+
-  scale_size_area(max_size = 10)+
-  scale_x_discrete(breaks = c(-1,100))+
-  ylab("% WEIRD")+
-  xlab("")+
-  theme_minimal(base_size = 15)
-g1b
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+#g1a
 
 head(x2)
 g2a<-ggplot(data = x2[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = .02)+
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
   coord_flip() +
   theme(text = element_text(size=16)) +
   scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.5)) + 
   scale_fill_brewer(palette="Dark2")+
   ylab("% Musicians")+
   xlab("Keyword (ranked)")+
-  theme_linedraw(base_size = 15)
-g2a
-
-g2b<-ggplot(data = x2[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = KW,size = Freq)) + 
-  geom_text(nudge_y = .02,show.legend = FALSE,hjust=0)+
-  #  geom_point()+
-  coord_flip() +
-  theme(text = element_text(size=16)) +
-  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.67)) + 
-  scale_fill_brewer(palette="Dark2")+
-  scale_size_area(max_size = 10)+
-  scale_x_discrete(breaks = c(-1,100))+
-  ylab("% Musicians")+
-  xlab("")+
-  theme_minimal(base_size = 15)
-g2b
-
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
 head(x3)
 g3a<-ggplot(data = x3[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = .02)+
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
   coord_flip() +
   theme(text = element_text(size=16)) +
   scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.5)) + 
   scale_fill_brewer(palette="Dark2")+
-  ylab("% Western")+
+  ylab("% Western music")+
   xlab("Keyword (ranked)")+
-  theme_linedraw(base_size = 15)
-g3a
-
-g3b<-ggplot(data = x3[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = KW,size = Freq)) + 
-  geom_text(nudge_y = .02,show.legend = FALSE,hjust=0)+
-  #  geom_point()+
-  coord_flip() +
-  theme(text = element_text(size=16)) +
-  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.67)) + 
-  scale_fill_brewer(palette="Dark2")+
-  scale_size_area(max_size = 10)+
-  scale_x_discrete(breaks = c(-1,100))+
-  ylab("% Western music examples")+
-  xlab("")+
-  theme_minimal(base_size = 15)
-g3b
-
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
 head(x4)
 g4a<-ggplot(data = x4[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = .02)+
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
   coord_flip() +
   theme(text = element_text(size=16)) +
   scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.5)) + 
   scale_fill_brewer(palette="Dark2")+
   ylab("% University samples")+
   xlab("Keyword (ranked)")+
-  theme_linedraw(base_size = 15)
-g4a
-
-g4b<-ggplot(data = x4[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = KW,size = Freq)) + 
-  geom_text(nudge_y = .02,show.legend = FALSE,hjust=0)+
-  #  geom_point()+
-  coord_flip() +
-  theme(text = element_text(size=16)) +
-  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.67)) + 
-  scale_fill_brewer(palette="Dark2")+
-  scale_size_area(max_size = 10)+
-  scale_x_discrete(breaks = c(-1,100))+
-  ylab("% University samples")+
-  xlab("")+
-  theme_minimal(base_size = 15)
-g4b
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
 head(x5)
 Md<-median(x5$prop,na.rm=TRUE)
 g5a<-ggplot(data = x5[FROM:TO,], aes(x = reorder(KW,prop),y=prop-Md, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = 1)+
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = 0.65,family = 'Times')+
   coord_flip() +
   theme(text = element_text(size=16)) +
   scale_y_continuous(breaks=seq(-10,10,5),limits = c(-10,12)) + 
   scale_fill_brewer(palette="Dark2")+
   ylab("Years from the median age")+
   xlab("Keyword (ranked)")+
-  theme_linedraw(base_size = 15)
-g5a
-
-g5b<-ggplot(data = x5[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = KW,size = Freq)) + 
-  geom_text(nudge_y = .02,show.legend = FALSE,hjust=0)+
-  #  geom_point()+
-  coord_flip() +
-  theme(text = element_text(size=16)) +
-  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.67)) + 
-  scale_fill_brewer(palette="Dark2")+
-  scale_size_area(max_size = 10)+
-  scale_x_discrete(breaks = c(-1,100))+
-  ylab("% Age above median")+
-  xlab("Keyword (ranked)")+
-  theme_minimal(base_size = 15)
-g5b
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
 head(x6)
 #Md<-median(x6$prop,na.rm=TRUE)
 #Md
 g6a<-ggplot(data = x6[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = .02)+
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .0115,family = 'Times')+
   coord_flip() +
   theme(text = element_text(size=16)) +
   scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.2,.2)) + 
   scale_fill_brewer(palette="Dark2")+
   ylab("% Females")+
   xlab("Keyword (ranked)")+
-  theme_linedraw(base_size = 15)
-g6a
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
-Ga<-cowplot::plot_grid(g1a,g2a,g3a,g4a,g5a,g6a,nrow = 3,ncol = 2)
-Ga
-ggsave(filename = 'keyword_combination_ver1_R1.pdf',Ga,device = 'pdf',width = 14,height = 15)
+Ga <- cowplot::plot_grid(g1a,g2a,g3a,g4a,g5a,g6a,nrow = 3,ncol = 2)
+print(Ga)
 
-Gb<-cowplot::plot_grid(g1b,g2b,g3b,g4b)
-Gb
-ggsave(filename = 'keyword_combination_ver2.pdf',Gb,device = 'pdf',width = 14,height = 10)
-
-#### As a table --------
-head(x1)
-X1 = x1[FROM:TO,c(1,4,5)]
-X1$Rank<-1:nrow(X1)
-X1$Concept<-'WEIRD'
-dim(X1)
-head(X1)
-
-X2 = x2[FROM:TO,c(1,4,5)]
-X2$Rank<-1:nrow(X2)
-X2$Concept<-'Musicians'
-
-X3 = x3[FROM:TO,c(1,4,5)]
-X3$Rank<-1:nrow(X3)
-X3$Concept<-'Western musical samples'
-
-X4 = x4[FROM:TO,c(1,4,5)]
-X4$Rank<-1:nrow(X4)
-X4$Concept<-'University samples'
-head(X4)
-
-X<-rbind(X1,X2,X3,X4)
-head(X)
-head(X1)
-X
-head(X)
-ga<-ggplot(data = X, aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
-  geom_col(fill='lightblue4',color='grey10') +
-  geom_text(nudge_y = .02)+
-  coord_flip() +
-  facet_wrap(.~Concept,scales = "free_x")+
-  theme(text = element_text(size=16)) +
-  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.5)) + 
-  scale_fill_brewer(palette="Dark2")+
-  ylab("%")+
-  xlab("")+
-  theme_linedraw(base_size = 15)
-ga
-
-ggsave(filename = 'keyword_combination_ver3.pdf',ga,device = 'pdf',width = 14,height = 10)
-head(X)
-X$prop<-X$prop*100
-Xw <- pivot_wider(X,id_cols = c(KW,Freq),values_from = c(prop),names_from = Concept)
-head(Xw)
-knitr::kable(Xw,digits = 2)
-
-rm(D,data,freq_table,freq1,freq2)
-
+if(plotflag==TRUE){
+  ggsave(filename = 'figure3.pdf',Ga,device = 'pdf',width = 14,height = 15)
+}

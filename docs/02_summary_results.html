@@ -103,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -203,7 +232,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#summaries" id="toc-summaries" class="nav-link active" data-scroll-target="#summaries">Summaries</a></li>
+  <li><a href="#summaries" id="toc-summaries" class="nav-link active" data-scroll-target="#summaries">Summaries</a>
+  <ul class="collapse">
+  <li><a href="#descriptives-and-weird" id="toc-descriptives-and-weird" class="nav-link" data-scroll-target="#descriptives-and-weird">Descriptives and WEIRD</a></li>
+  <li><a href="#produce-numbers-reported-in-the-manuscript" id="toc-produce-numbers-reported-in-the-manuscript" class="nav-link" data-scroll-target="#produce-numbers-reported-in-the-manuscript">Produce numbers reported in the manuscript</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -213,133 +246,534 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="summaries" class="level2">
-<h2 class="anchored" data-anchor-id="summaries">Summaries</h2>
-<div class="cell" data-warnings="false" data-messages="false">
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.0     ✔ tibble    3.2.1
-✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-</div>
-</div>
+<section id="summaries" class="level1">
+<h1>Summaries</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file=</span><span class="st">'data/WEIRD_data.Rdata'</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/table1.R'</span>)                 <span class="co"># creates numbers for Table 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'Hmisc'</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(weights)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(papaja)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file=</span><span class="st">'data/WEIRD_data.Rdata'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:dplyr':
-
-    src, summarize</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    format.pval, units</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'DescTools'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:Hmisc':
-
-    %nin%, Label, Mean, Quantile</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Registered S3 method overwritten by 'gdata':
-  method         from     
-  reorder.factor DescTools</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
- Sample size:
-
-Non-WEOG     WEOG 
-     160     1251 
-# A tibble: 2 × 5
-  sample_country_data_collected_WEOG data                 median lwr.ci upr.ci
-  &lt;chr&gt;                              &lt;list&gt;                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-1 WEOG                               &lt;tibble [1,251 × 1]&gt;   48     42     52  
-2 Non-WEOG                           &lt;tibble [160 × 1]&gt;     54.5   38.5   68.5
-[1] "p-value: 0.486040728075409"
-
- Age Mean:
-  wtd.avg CI.LL CI.UL
-1   19.93 16.71 22.23
-2   27.63 25.35 29.99
-[1] "p-value: 0"
-
- Age SD:
-  wtd.avg CI.LL CI.UL
-1    3.72  2.42  4.61
-2    7.12  6.26  8.06
-[1] "p-value: 0"
-
- Gender balance:
-  wtd.avg CI.LL CI.UL
-1    0.54  0.50  0.56
-2    0.59  0.57  0.61
-[1] "p-value: 0"
-  wtd.avg CI.LL CI.UL
-1    0.54  0.49  0.56
-2    0.59  0.57  0.61
-[1] "p-value: 0"
-
- Solely musicians:
-[1] "overall musical expertise across samples"
-
-               musicians musicians; non-musicians            non-musicians 
-                    30.5                     22.0                     10.1 
-           Not specified 
-                    37.4 
-[1] "musicians n=381: 30% [28% to 33%]"
-[1] "musicians n=48: 30% [23% to 37%]"
-[1] "p-value: 0.92"
-
- musicians and non-musicians:
-[1] "musicians n=662: 53% [50% to 56%]"
-[1] "musicians n=80: 50% [42% to 58%]"
-[1] "p-value: 0.494"
-
- Solely Non-musicians:
-[1] "non-musicians n=131: 10% [9% to 12%]"
-[1] "non-musicians n=22: 14% [9% to 19%]"
-[1] "p-value: 0.223"
-
- University sample:
-[1] "NA n=616: 49% [46% to 52%]"
-[1] "NA n=92: 57% [50% to 66%]"
-[1] "p-value: 0.05"
-
- Recruitment volunteer:
-[1] "volunteer n=370: 30% [27% to 32%]"
-[1] "volunteer n=54: 34% [27% to 42%]"
-[1] "p-value: 0.321"
-
- Experimenter Created Music:
-[1] "experimenter n=270: 34% [31% to 38%]"
-[1] "experimenter n=59: 34% [27% to 41%]"
-[1] "p-value: 0.925"
-
- Western music:
-[1] "western n=572: 73% [70% to 76%]"
-[1] "western n=104: 59% [53% to 67%]"
-[1] "p-value: 0.001"
-
- Table ready!</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/report_numbers_for_MS.R'</span>)  <span class="co"># create numbers for the ms</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="descriptives-and-weird" class="level2">
+<h2 class="anchored" data-anchor-id="descriptives-and-weird">Descriptives and WEIRD</h2>
+<p>Compare descriptives across WEIRD and non-WEIRD countries across studies and samples (Table 1 in the manuscript).</p>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/table1.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="table">
+<caption>Sample Size</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sample_country_data_collected_WEOG</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">WEOG</td>
+<td style="text-align: right;">48.0</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Non-WEOG</td>
+<td style="text-align: right;">54.5</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">68</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “<span class="math inline">\(W = 103,461.00\)</span>, <span class="math inline">\(p = .486\)</span>”</p>
+<table class="table">
+<caption>Age Mean</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">wtd.avg</th>
+<th style="text-align: right;">CI.LL</th>
+<th style="text-align: right;">CI.UL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">19.93</td>
+<td style="text-align: right;">16.79</td>
+<td style="text-align: right;">21.93</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">27.63</td>
+<td style="text-align: right;">25.38</td>
+<td style="text-align: right;">30.02</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “t value = 9.59, df = 203.71, p-value = 0”</p>
+<p>Age SD:</p>
+<table class="table">
+<caption>Age SD</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">wtd.avg</th>
+<th style="text-align: right;">CI.LL</th>
+<th style="text-align: right;">CI.UL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">3.72</td>
+<td style="text-align: right;">2.47</td>
+<td style="text-align: right;">4.63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">7.12</td>
+<td style="text-align: right;">6.18</td>
+<td style="text-align: right;">8.07</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “t value = 8.31, df = 151.22, p-value = 0”</p>
+<p>Gender balance (country data collected):</p>
+<table class="table">
+<caption>Gender balance (Primary Country Data Collected)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">wtd.avg</th>
+<th style="text-align: right;">CI.LL</th>
+<th style="text-align: right;">CI.UL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.57</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “t value = 4.09, df = 139.18, p-value = 0”</p>
+<p>Gender balance (based on first author country):</p>
+<table class="table">
+<caption>Gender balance (Primary Author Country)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">wtd.avg</th>
+<th style="text-align: right;">CI.LL</th>
+<th style="text-align: right;">CI.UL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.57</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “t value = 3.67, df = 109, p-value = 0.002”</p>
+<p>Solely musicians:</p>
+<table class="table">
+<caption>Musical expertise across samples</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Expertise</th>
+<th style="text-align: right;">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">musicians</td>
+<td style="text-align: right;">30.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">musicians; non-musicians</td>
+<td style="text-align: right;">22.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">non-musicians</td>
+<td style="text-align: right;">10.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Not specified</td>
+<td style="text-align: right;">37.4</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]”</p>
+<table class="table">
+<caption>Solely musicians</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">musicians</td>
+<td style="text-align: right;">381</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">others</td>
+<td style="text-align: right;">870</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">0.72</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">musicians</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">0.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">others</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.77</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 0.01 , p-value = 0.919540229885057”</p>
+<p>musicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]”</p>
+<table class="table">
+<caption>musicians and non-musicians</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">musicians</td>
+<td style="text-align: right;">662</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.53</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">non-musicians</td>
+<td style="text-align: right;">589</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">musicians</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">0.58</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">non-musicians</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">0.58</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 0.48 , p-value = 0.493753123438281”</p>
+<p>Solely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]”</p>
+<table class="table">
+<caption>non-musicians</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">others</td>
+<td style="text-align: right;">1120</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">0.91</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">non-musicians</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">others</td>
+<td style="text-align: right;">138</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">0.92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">non-musicians</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 1.58 , p-value = 0.222888555722139”</p>
+<p>University sample: [1] “NA n=616: 49% [46% to 52%]” [1] “NA n=92: 57% [50% to 66%]”</p>
+<table class="table">
+<caption>University samples</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">635</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">0.54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">616</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">0.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.66</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 3.87 , p-value = 0.0499750124937531”</p>
+<p>Recruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]”</p>
+<table class="table">
+<caption>Volunteer samples</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">others</td>
+<td style="text-align: right;">881</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.73</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">volunteer</td>
+<td style="text-align: right;">370</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">others</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">volunteer</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.42</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 0.99 , p-value = 0.320865528891456”</p>
+<p>Experimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]”</p>
+<table class="table">
+<caption>Experimenter selected. music</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">other</td>
+<td style="text-align: right;">514</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">experimenter</td>
+<td style="text-align: right;">270</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">other</td>
+<td style="text-align: right;">116</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.73</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">experimenter</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.41</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 0.01 , p-value = 0.924726224159515”</p>
+<p>Western music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]”</p>
+<table class="table">
+<caption>Western music</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">var</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">label</th>
+<th style="text-align: right;">prop</th>
+<th style="text-align: right;">lwr.ci</th>
+<th style="text-align: right;">upr.ci</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">other</td>
+<td style="text-align: right;">212</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">0.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">western</td>
+<td style="text-align: right;">572</td>
+<td style="text-align: left;">WEIRD</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.76</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">other</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0.48</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">western</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: left;">Non-WEIRD</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.53</td>
+<td style="text-align: right;">0.67</td>
+</tr>
+</tbody>
+</table>
+<p>[1] “Chi = 11.95 , p-value = 0.000546663726214618”</p>
+</section>
+<section id="produce-numbers-reported-in-the-manuscript" class="level2">
+<h2 class="anchored" data-anchor-id="produce-numbers-reported-in-the-manuscript">Produce numbers reported in the manuscript</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/report_numbers_for_MS.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Mean weighted age:"
 [1] 27.05683
@@ -368,6 +802,7 @@ Non-WEOG     WEOG
 </div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

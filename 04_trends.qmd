@@ -1,20 +1,29 @@
+---
+format: 
+  html:
+    fig-width: 12
+    fig-height: 12
+---
 
 ## Trends
 
 ```{r}
 #| eval: true
 #| echo: false
-#| warnings: false
-#| messages: false
+#| warning: false
+#| output: false
 library(tidyverse)
 library(stringr)
 library(ggplot2)
 load(file='data/WEIRD_data.Rdata')
 ```
 
+Visualise key variables across WEIRD and non-WEIRD countries.
+
 ```{r}
 #| eval: true
 #| echo: true
-source('scripts/trends.R')                 # Visualise various trends (Figure 2)
+#| warning: false
+source('scripts/trends.R') # Figure 2
 ```
 

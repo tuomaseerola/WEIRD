@@ -1,22 +1,37 @@
+---
+format: 
+  html:
+    fig-width: 13
+    fig-height: 8
+---
 
 ## Maps
 
 ```{r}
 #| eval: true
 #| echo: false
-#| warnings: false
-#| messages: false
+#| warning: false
+#| output: false
 library(tidyverse)
 library(stringr)
 library(ggplot2)
+library(cowplot)
+library(ggthemes)
+library(viridis)
+library(countrycode)
 ```
+
+Produce two global maps together with some other information about the sample.
 
 ```{r}
 #| eval: true
 #| echo: true
+#| warning: false
+#| output: true
 load(file='data/WEIRD_data.Rdata')
 
 source('scripts/preprocess_for_maps.R')    # prepare country information  
 source('scripts/WEIRD_map.R')              # Extra plot
-source('scripts/visualise_on_map.R')       # Figure 1 (4 sub-plots)
+source('scripts/visualise_on_map.R')       # Figure 1
 ```
+

@@ -5,10 +5,10 @@
 # Status: Complete
 
 #### 0. Define functions ---------
-library(Hmisc)
-library(DescTools)
-library(weights)
-library(boot)
+#library(Hmisc)
+#library(DescTools)
+#library(weights)
+#library(boot)
 
 my.function = function(data,index){
   d = data[index,]  #create bootstrap sample of all columns of original data?
@@ -17,21 +17,24 @@ my.function = function(data,index){
 
 
 #### ROW 2 Sample Size -------------------------
-cat('\n Sample size:\n')
+#cat('\n Sample size:\n')
 tmp<-dplyr::select(DF,sample_country_data_collected_WEOG,sample_size)
 table(tmp$sample_country_data_collected_WEOG)
 tmp<-drop_na(tmp)
-print(table(tmp$sample_country_data_collected_WEOG))
+#print(table(tmp$sample_country_data_collected_WEOG))
 row2a <- tmp %>% 
   nest(data = -"sample_country_data_collected_WEOG") %>%
   mutate(ci = map(data, ~ MedianCI(.x$sample_size, method = "boot", R = 1000))) %>% 
   unnest_wider(ci)
-print(row2a)
+#print(row2a)
+print(knitr::kable(row2a[,c(1,3:5)],digits=2,caption='Sample Size'))
+
 row2a_p<-wilcox.test(sample_size~sample_country_data_collected_WEOG,data=tmp)
-print(paste0('p-value: ',row2a_p$p.value))
-row2a_p
+p<-apa_print(row2a_p)
+print(p$statistic)
+
 #### ROW 3 Age M -------------------------
-cat('\n Age Mean:\n')
+#cat('\n Age Mean:\n')
 
 tmp<-dplyr::select(DF,sample_country_data_collected_WEOG,sample_agemean,sample_size)
 tmp<-drop_na(tmp)
@@ -48,7 +51,9 @@ x<-tmp %>%
       data.frame(wtd.avg, CI.LL, CI.UL)
     }
   )
-print(round(x,2))
+rownames(x)<-c('Non-WEIRD','WEIRD')
+print(knitr::kable(x,digits=2,caption='Age Mean'))
+
 W<-dplyr::filter(tmp,cat=='WEOG')
 NW<-dplyr::filter(tmp,cat=='Non-WEOG')
 weighted.mean(W$counts,W$weights)
@@ -56,8 +61,9 @@ nrow(W)
 weighted.mean(NW$counts,NW$weights)
 nrow(NW)
 w <- wtd.t.test(x=W$counts,y=NW$counts,weight = W$weights,weighty = NW$weights,bootse = T,bootp = TRUE,bootn = 1000,samedata = FALSE)
-w
-print(paste0('p-value: ',round(w$coefficients[3],3)))
+print(paste0('t value = ',round(w$coefficients[1],2),
+                  ', df = ',round(w$coefficients[2],2),
+             ', p-value = ',round(w$coefficients[3],3)))
 
 #### ROW4 Age SD --------
 cat('\n Age SD:\n')
@@ -77,15 +83,19 @@ x<-tmp %>%
       data.frame(wtd.avg, CI.LL, CI.UL)
     }
   )
-print(round(x,2))
+rownames(x)<-c('Non-WEIRD','WEIRD')
+print(knitr::kable(x,digits=2,caption='Age SD'))
+
 W<-dplyr::filter(tmp,cat=='WEOG')
 NW<-dplyr::filter(tmp,cat=='Non-WEOG')
 nrow(W); nrow(NW)
 w <- wtd.t.test(x=W$counts,y=NW$counts,weight = W$weights,weighty = NW$weights,bootse = T,bootp = TRUE,bootn = 1000,samedata = FALSE)
-print(paste0('p-value: ',round(w$coefficients[3],3)))
+print(paste0('t value = ',round(w$coefficients[1],2),
+             ', df = ',round(w$coefficients[2],2),
+             ', p-value = ',round(w$coefficients[3],3)))
 
 #### ROW5 sample_gender_balance -------
-cat('\n Gender balance:\n')
+cat('\n Gender balance (country data collected):\n')
 
 tmp<-dplyr::select(DF,sample_country_data_collected_WEOG,sample_gender_balance,sample_size)
 #head(tmp)
@@ -106,13 +116,18 @@ x<-tmp %>%
       data.frame(wtd.avg, CI.LL, CI.UL)
     }
   )
-print(round(x,2))
+rownames(x)<-c('Non-WEIRD','WEIRD')
+print(knitr::kable(x,digits=2,caption='Gender balance (Primary Country Data Collected)'))
+
 W<-dplyr::filter(tmp,cat=='WEOG')
 NW<-dplyr::filter(tmp,cat=='Non-WEOG')
 nrow(W); nrow(NW)
 w <- wtd.t.test(x=W$counts,y=NW$counts,weight = W$weights,weighty = NW$weights,bootse = T,bootp = TRUE,bootn = 1000,samedata = FALSE)
-w
-print(paste0('p-value: ',round(w$coefficients[3],3)))
+print(paste0('t value = ',round(w$coefficients[1],2),
+             ', df = ',round(w$coefficients[2],2),
+             ', p-value = ',round(w$coefficients[3],3)))
+
+cat('\n Gender balance (based on first author country):\n')
 
 # Same with first author's country of affiliation
 tmp<-dplyr::select(DF,FirstAuthorCountry_WEOG,sample_gender_balance,sample_size)
@@ -131,14 +146,17 @@ x<-tmp %>%
       data.frame(wtd.avg, CI.LL, CI.UL)
     }
   )
-print(round(x,2))
+
+rownames(x)<-c('Non-WEIRD','WEIRD')
+print(knitr::kable(x,digits=2,caption='Gender balance (Primary Author Country)'))
+
 W<-dplyr::filter(tmp,cat=='WEOG')
 NW<-dplyr::filter(tmp,cat=='Non-WEOG')
 nrow(W); nrow(NW)
 w <- wtd.t.test(x=W$counts,y=NW$counts,weight = W$weights,weighty = NW$weights,bootse = T,bootp = TRUE,bootn = 1000,samedata = FALSE)
-w
-print(paste0('p-value: ',round(w$coefficients[3],3)))
-
+print(paste0('t value = ',round(w$coefficients[1],2),
+             ', df = ',round(w$coefficients[2],2),
+             ', p-value = ',round(w$coefficients[3],3)))
 
 #### ROW6 1: solely musicians --------
 cat('\n Solely musicians:\n')
@@ -150,17 +168,15 @@ tmp$SampleMusicianshipDescription[is.na(tmp$SampleMusicianshipDescription)]<-'No
 #table(tmp$SampleMusicianshipDescription)
 
 # Report overall
-t<-table(tmp$SampleMusicianshipDescription)/sum(table(tmp$SampleMusicianshipDescription))
-print("overall musical expertise across samples")
-print(round(t*100,1))
-
+t<-table(tmp$SampleMusicianshipDescription)/sum(table(tmp$SampleMusicianshipDescription))*100
+t<-data.frame(t); colnames(t)<-c("Expertise","%")
+print(knitr::kable(t,digits=1,caption = 'Musical expertise across samples'))
 
 tmp$SampleMusicianshipDescriptionBinary<-factor(tmp$SampleMusicianshipDescription,
                                                 levels = c("musicians","musicians; non-musicians","non-musicians","Not specified"),
                                                 labels = c("musicians","others","others","others"))
-t<-table(tmp$SampleMusicianshipDescriptionBinary)/sum(table(tmp$SampleMusicianshipDescriptionBinary))
-round(t*100,0)
-
+t<-data.frame(table(tmp$SampleMusicianshipDescriptionBinary)/sum(table(tmp$SampleMusicianshipDescriptionBinary)))
+t
 expertise1 <- tmp %>% 
   filter(sample_country_data_collected_WEOG=='WEOG') %>%
   count(SampleMusicianshipDescriptionBinary, .drop = F) %>%
@@ -194,14 +210,19 @@ expertise2 <- cbind(expertise2,
   rename(prop = est) %>%
   mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
          abs_string = paste0(n, "/", sum(expertise2$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
-expertise2
 print(paste0(as.character(expertise2$var[1]),' n=',expertise2$n[1],': ',expertise2$string[1]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Solely musicians'))
+
 t<-table(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG)
-#t
+t
 set.seed(42)
 x<-chisq.test(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG,simulate.p.value = TRUE)
-print(paste0('p-value: ', round(x$p.value,3)))
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
+
 
 #### ROW6 2: musicians and musicians and non-musicians --------
 cat('\n musicians and non-musicians:\n')
@@ -259,11 +280,16 @@ expertise2 <- cbind(expertise2,
 expertise2
 print(paste0(as.character(expertise2$var[1]),' n=',expertise2$n[1],': ',expertise2$string[1]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'musicians and non-musicians'))
+
 t<-table(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG)
 #t
 set.seed(42)
 x<-chisq.test(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
-print(paste0('p-value: ', round(x$p.value,3)))
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 #### ROW6 3: non-musicians --------
 cat('\n Solely Non-musicians:\n')
@@ -322,11 +348,16 @@ expertise2 <- cbind(expertise2,
 expertise2
 print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'non-musicians'))
+
 t<-table(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG)
 #t
 set.seed(42)
 x<-chisq.test(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
-print(paste0('p-value: ', round(x$p.value,3)))
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 #### ROW 7 University Sample -------
 cat('\n University sample:\n')
@@ -398,11 +429,17 @@ expertise2 <- cbind(expertise2,
 expertise2
 print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'University samples'))
+
+
 t<-table(tmp$uni,tmp$sample_country_data_collected_WEOG)
 t
 set.seed(42)
 x<-chisq.test(tmp$uni,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
-print(paste0('p-value: ', round(x$p.value,3)))
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 #### ROW 8 Recruitment ----------
 cat('\n Recruitment volunteer:\n')
@@ -458,10 +495,16 @@ expertise2 <- cbind(expertise2,
 expertise2
 print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Volunteer samples'))
+
+
 t<-table(tmp$incentive,tmp$sample_country_data_collected_WEOG)
 t
 x<-chisq.test(tmp$incentive,tmp$sample_country_data_collected_WEOG)
-print(paste0('p-value: ', round(x$p.value,3)))
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 #### ROW 9 Experimenter Created Music ----------
 cat('\n Experimenter Created Music:\n')
@@ -521,10 +564,16 @@ expertise2 <- cbind(expertise2,
 expertise2
 print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Experimenter selected. music'))
+
+
 t<-table(tmp$source,tmp$CountryDataCollected_WEOG)
 t
 x<-chisq.test(tmp$source,tmp$CountryDataCollected_WEOG)
-print(paste0('p-value: ', round(x$p.value,3)))
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 #### ROW 10: Music Origin ----------
 cat('\n Western music:\n')
@@ -592,12 +641,15 @@ expertise2 <- cbind(expertise2,
 expertise2
 print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
 
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Western music'))
+
 t<-table(tmp$origin,tmp$CountryDataCollected_WEOG)
 t
 sum(t)
 x<-chisq.test(tmp$origin,tmp$CountryDataCollected_WEOG)
-print(paste0('p-value: ', round(x$p.value,3)))
-
-cat('\n Table ready!\n')
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 rm(w,W,tmp,row2a,row2a_p,x,expertise1,expertise2,t,my.function,NW,DM)

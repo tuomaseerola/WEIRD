@@ -4,7 +4,7 @@
 # T. Eerola, 23/3/2024
 # Status: Complete
 
-saveplots <- TRUE
+saveplots <- FALSE
 
 #### get unique studies ------
 D <- dplyr::filter(d,study_id=='study1') # 1360 articles (1360 correct!)
@@ -32,8 +32,7 @@ table(map1$COWcode)
 #map1 <- tidyr::drop_na(map1,COWcode)
 dim(map1)
 
-library(ggthemes)
-library(viridis)
+
 
 # Projection
 target_crs <- "+proj=eqearth +wktext"
@@ -134,7 +133,7 @@ colnames(t)<-c('Year','Count')
 g3<-ggplot(t,aes(x=Year,y=Count))+
   geom_col(fill='grey85',colour='black')+
   scale_y_continuous(limits = c(0,200),expand = c(0.01,0.01))+
-  ggtitle('Number of publications by year')+
+  ggtitle('Number of articles by year')+
   theme_bw(base_size = 13,base_family = 'Times')+
   theme(plot.title = element_text(hjust = 0.5))
 g3
@@ -176,23 +175,16 @@ g4b
 ind<-as.numeric(D$SampleSize)>1000
 sum(ind==TRUE,na.rm = T)
 
-library(cowplot)
-G <- cowplot::plot_grid(g1,g3,g2,g4a,rel_widths = c(1.45,1),rel_heights = c(1,1),labels = "AUTO")
-G
+#library(cowplot)
+G <- cowplot::plot_grid(g1,g3,g2,g4a,rel_widths = c(1.45,1),rel_heights = c(1,1),labels = "AUTO",label_fontfamily = 'Times')
+print(G)
 
 if(saveplots==TRUE){
   ggsave(filename = 'figure1.pdf',device = 'pdf',G,width = 13,height = 8)
 }
 
-G2 <- cowplot::plot_grid(g1,g3,g5,g4a,rel_widths = c(1.45,1),rel_heights = c(1,1),labels = "AUTO")
-G2
-
-if(saveplots==TRUE){
-  ggsave(filename = 'figure1_alt.pdf',device = 'pdf',G2,width = 13,height = 8)
-}
 
 #### Clean --------------
 rm(list = ls()[grep("^map", ls())])
 rm(list = ls()[grep("^dis", ls())])
 rm(list = ls()[grep("^coun", ls())])
-rm(G2)

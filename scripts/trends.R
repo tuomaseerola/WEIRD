@@ -2,17 +2,10 @@
 # WEIRD article
 # T. Eerola, 23/3/2024
 
-# solely musicians?
-# variation of sample age per year (SD ageman / per)?
-
 library(ggrepel)
 saveplots <- FALSE
 
 #### Temporal trends related WEO (diversity) -----------
-#d<-ungroup(d)
-#dim(d)
-#d$Year
-#d$Year<-as.numeric(levels(d$Year))[d$Year]
 
 #### 1 WEOG prop -----------
 tmp <- d %>%
@@ -54,56 +47,6 @@ g2<-ggplot(tmp2,aes(Year,prop))+
   theme_bw(base_size = 15,base_family = 'Times')
 #g2
 
-#### 3 Age by WEIRD -----------
-#D <- dplyr::filter(d,humansample==TRUE)
-#nrow(D)
-#D$CountryDataCollected_WEOG
-#D$SampleAgeMean
-#D$Year
-# 
-# tmp3 <- D %>%
-#   select(Year,CountryDataCollected_WEOG,SampleAgeMean) %>%
-#   drop_na() %>%
-#   group_by(Year,CountryDataCollected_WEOG) %>%
-#   summarise(AgeM = median(SampleAgeMean,na.rm=TRUE),n=n())
-# head(tmp3)
-# 
-# tmp3 <- dplyr::filter(tmp3,n > 5)
-# 
-# g3<-ggplot(tmp3,aes(Year,AgeM,shape=CountryDataCollected_WEOG,color=CountryDataCollected_WEOG,label=n))+
-#   geom_point(show.legend = F)+
-#   geom_text_repel(nudge_y = .02,show.legend = F,family = 'Times')+
-#   geom_smooth(method = 'lm',fullrange=TRUE,se=FALSE)+
-#   scale_color_brewer(name='Group',palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
-#   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
-#   ylab('Mean Age (Years)')+
-#   theme_bw(base_size = 15,base_family = 'Times')+
-#   theme(legend.position="none")
-# g3
-
- 
-# tmp3_B <- d %>%
-#   select(Year,CountryDataCollected_WEOG,SampleAgeMean,SampleSize) %>%
-#   drop_na() %>%
-#   group_by(Year,CountryDataCollected_WEOG) %>%
-#   summarise(AgeM = weighted.mean(SampleAgeMean,SampleSize,na.rm=TRUE))
-# head(tmp3_B)
-# 
-# g3b<-ggplot(tmp3_B,aes(Year,AgeM,shape=CountryDataCollected_WEOG,color=CountryDataCollected_WEOG))+
-#   geom_point(show.legend = F)+
-#   geom_smooth(method = 'lm',fullrange=TRUE,se=TRUE)+
-#   #  scale_y_continuous(breaks = seq(0,1,by=0.25),limits = c(0.3,1))+
-#   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
-#   scale_color_brewer(name="Group",palette = 'Set1')+
-#   ylab('Mean Age')+
-#   theme_bw()+
-#   theme(legend.position="top")
-# g3b
-
-#### 3 Age SD by WEOG -----------
-#nrow(DF)
-#DF$sample_agesd
-
 tmp3 <- DF %>%
   select(Year,CountryDataCollected_WEOG,sample_agesd) %>%
   drop_na() %>%
@@ -125,29 +68,9 @@ g3<-ggplot(tmp3,aes(Year,AgeSD,shape=CountryDataCollected_WEOG,color=CountryData
   theme(legend.position="none")
 #g3
  
-# 
-# tmp4_B <- d %>%
-#   select(Year,CountryDataCollected_WEOG,SampleAgeSD,SampleSize) %>%
-#   drop_na() %>%
-#   group_by(Year,CountryDataCollected_WEOG) %>%
-#   summarise(AgeSD = weighted.mean(SampleAgeSD,SampleSize,na.rm=TRUE))
-# head(tmp4_B)
-# 
-# g4b<-ggplot(tmp4_B,aes(Year,AgeSD,shape=CountryDataCollected_WEOG,color=CountryDataCollected_WEOG))+
-#   #  geom_line()+
-#   geom_point(show.legend = F)+
-#   geom_smooth(method = 'lm',fullrange=TRUE,se=TRUE)+
-#   #  scale_y_continuous(breaks = seq(0,1,by=0.25),limits = c(0.3,1))+
-#   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
-#   scale_color_brewer(name='Group',palette = 'Set1')+
-#   ylab('Age Variation (SD) w')+
-#   theme_bw()+
-#   theme(legend.position="top")
-# g4b
 
 #### 4 Gender by WEOG -----------
-#d$gender_balance
-DF$sample_gender_balance
+
 tmp4 <- DF %>%
   select(Year,CountryDataCollected_WEOG,sample_gender_balance) %>%
   drop_na() %>%
@@ -171,7 +94,7 @@ g4<-ggplot(tmp4,aes(Year,genderprop,shape=CountryDataCollected_WEOG,color=Countr
 #g4
 
 #### 5 UNI by WEOG -----------
-cat('\n University sample:\n')
+#cat('\n University sample:\n')
 #D <- dplyr::filter(d,humansample==TRUE)
 
 DF$SampleOtherDescription[is.na(DF$SampleOtherDescription)]<-'Not specified'

@@ -1,4 +1,4 @@
-setwd("/Users/wxbn79/Dropbox/2023_WEIRD")
+#setwd("/Users/wxbn79/Dropbox/2023_WEIRD")
 
 weird <- read.csv("data/WEIRD coding final corr names.csv")
 

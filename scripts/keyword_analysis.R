@@ -3,19 +3,7 @@
 # T. Eerola, 23/3/2024
 # Status: Complete
 
-####### TO DO
-#I've only just thought of this when I saw this note I wrote here. We currently analyse the keywords in 
-# relation to Western/non-Western countries. Could we consider also analysing by other demographic factors? 
-#   For instance, certain subtopics are more likely than others to be investigated across a wide age range, 
-# to be investigated only in university samples, to be investigated more in musicians than non-musicians, 
-# and using more Western music stimuli. Do you think we could explore these options a bit more? This also 
-# relates to what we discussed about trying to make the narrative based on diversity more broadly and not just 
-# 'West vs the rest'
-#
-
-
-
-plotflag <- TRUE
+plotflag <- FALSE
 
 table(d$FirstAuthorCountry,d$FirstAuthorCountry_WEOG)
 sum(table(d$FirstAuthorCountry,d$FirstAuthorCountry_WEOG))
@@ -166,6 +154,7 @@ if(plotflag==TRUE){
 
 }
 
+print(g5)
 
 rm(D,data,freq_table,freq1,freq2)
 
