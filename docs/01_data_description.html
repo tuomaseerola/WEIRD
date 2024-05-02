@@ -210,7 +210,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description-of-data-frames" id="toc-description-of-data-frames" class="nav-link" data-scroll-target="#description-of-data-frames">Description of data frames</a></li>
   <li><a href="#description-of-variables" id="toc-description-of-variables" class="nav-link" data-scroll-target="#description-of-variables">Description of variables</a></li>
   </ul></li>
-  <li><a href="#save-if-necessary" id="toc-save-if-necessary" class="nav-link" data-scroll-target="#save-if-necessary">Save (if necessary)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -231,7 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The manually annotated data titled <code>data/WEIRD coding final corr names.csv</code> was cleaned through process captured in <code>weird data cleaning.R</code> script.</p>
-<p>Here we take this manually annotated and cleaned data, <code>data/WEIRD part cleaned Feb24.csv</code> and in the next step, add elements to it (WEIRD, non-WEIRD country codes, paper, study, sample ids, etc.).</p>
+<p>Here we take this manually annotated and cleaned data, <code>data/WEIRD part cleaned Feb24.csv</code>.</p>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/WEIRD part cleaned Feb24.csv'</span>,<span class="at">header =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(d[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="table">
@@ -292,7 +291,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="preprocess" class="level2">
 <h2 class="anchored" data-anchor-id="preprocess">Preprocess</h2>
-<p>Add several variables to the data (explanations below). This process creates four data frames used in subsequent analyses.</p>
+<p>In the preprocessing, we add elements to the data (WEIRD and non-WEIRD country codes, paper, study, sample ids, expand samples, and various other operations).</p>
+<p>This preprocessing creates four data frames used in subsequent analyses.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'scripts/preprocess.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -395,16 +395,14 @@ Final dataframes:
 [41] "FirstAuthorCountry_WEOG"                     </code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="save-if-necessary" class="level2">
-<h2 class="anchored" data-anchor-id="save-if-necessary">Save (if necessary)</h2>
+<p>Save (if necessary)</p>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>needs_saving <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(needs_saving<span class="sc">==</span><span class="cn">TRUE</span>){</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(d,df,D,DF,<span class="at">file=</span><span class="st">'data/WEIRD_data.Rdata'</span>)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 </section>
 

@@ -15,7 +15,7 @@ library(ggplot2)
 
 The manually annotated data titled `data/WEIRD coding final corr names.csv` was cleaned through process captured in `weird data cleaning.R` script.
 
-Here we take this manually annotated and cleaned data, `data/WEIRD part cleaned Feb24.csv` and in the next step, add elements to it (WEIRD, non-WEIRD country codes, paper, study, sample ids, etc.).
+Here we take this manually annotated and cleaned data, `data/WEIRD part cleaned Feb24.csv`. 
 
 ```{r}
 #| eval: true
@@ -27,7 +27,9 @@ knitr::kable(d[1:5,1:5])
 
 ## Preprocess
 
-Add several variables to the data (explanations below). This process creates four data frames used in subsequent analyses.
+In the preprocessing, we add elements to the data (WEIRD and non-WEIRD country codes, paper, study, sample ids, expand samples, and various other operations).
+
+This preprocessing creates four data frames used in subsequent analyses.
 
 ```{r}
 #| eval: true
@@ -64,7 +66,7 @@ names(d)
 
 ```
 
-## Save (if necessary)
+Save (if necessary)
 
 ```{r}
 #| output: asis
