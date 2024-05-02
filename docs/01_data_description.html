@@ -311,7 +311,7 @@ Unique first authors: 1021
 6. Handle online origin
 9. Create UIDs
 10. Gender balance indicators
-11. WERID indicator for countries
+11. WEIRD indicator for countries
 Using WEIRD_country_index: Krys
 11. Calculate weighted mean and sd age 
 12. Check counts of the expanded data frame
@@ -344,10 +344,36 @@ Final dataframes:
 <section id="description-of-variables" class="level3">
 <h3 class="anchored" data-anchor-id="description-of-variables">Description of variables</h3>
 <ul>
-<li><code>CountryDataCollected_WEOG</code> is based on WEIRD country index derived from Krys et al., (2014).</li>
-<li><code>FirstAuthorCountry_WEOG</code> is based on WEIRD country index derived from Krys et al., (2014).</li>
-<li><code>gender_balance</code> is the proportion of females in the samples</li>
-<li>… (to be continued)</li>
+<li><p><code>CountryDataCollected_WEOG</code> is based on WEIRD country index derived from Krys et al., (2014).</p></li>
+<li><p><code>FirstAuthorCountry_WEOG</code> is based on WEIRD country index derived from Krys et al., (2014).</p></li>
+<li><p><code>gender_balance</code> is the proportion of females in the samples</p></li>
+<li><p>… (to be continued)</p></li>
+<li><p><code>PaperTitle</code>: enter the exact title of the article</p></li>
+<li><p><code>Year</code>: year published</p></li>
+<li><p><code>Journal</code>: journal published in</p></li>
+<li><p><code>FirstAuthorName</code>: enter the first author’s name in this format: Jakubowski, Kelly</p></li>
+<li><p><code>FirstAuthorCountry</code>: enter the country of the institution where the first author works</p></li>
+<li><p><code>CountryDataCollected</code>: enter the country(s) where the data was collected. If more than one country (e.g., for a cross-cultural study), please enter ALL countries where data was collected, separated by semi-colons, for example: UK; Mali; Uruguay OR online = for online studies with no origin country data collected</p></li>
+<li><p><code>SamplePrimaryCountryofOrigin</code>: enter the country where the majority of the sample came from (for instance, if 54% of the participants were from the UK, enter UK). If sample came equally from multiple countries (e.g.&nbsp;1/3 of participants came from each of 3 countries), OR if the researchers explicitly recruited from different countries for the sake of making cross-national comparisons, then enter all countries separated by semi-colons, for example: UK; Mali; Uruguay<br>
+</p></li>
+<li><p><code>Ethnicity</code>: if described, enter the ethnicity of the majority of the sample (e.g.&nbsp;if more than 50% were white, enter white). If split equally across ethnicities, you can enter more than one ethnicity, separated by semi-colons. Categories to be used here: Asian, black, white, Hispanic, other</p></li>
+<li><p><code>SampleSize</code>: enter total sample size as a number</p></li>
+<li><p><code>SampleAgeMean</code>: enter mean age of the sample</p></li>
+<li><p><code>SampleAgeSD</code>: enter the standard deviation of the age of the sample</p></li>
+<li><p><code>SampleOtherDescription</code>: if other description of sample such as ‘university students’ or ‘undergraduate students’ is provided, please add this here. Please try and retain consistent category labels across studies</p></li>
+<li><p><code>SampleMusicianshipDescription</code>: if the sample is described by the authors as only consisting of musicians, write ‘musicians’; if described as only non-musicians, write ‘non-musicians’; if sample included both, include both labels separated by a semi-colon (musicians; non-musicians)</p></li>
+<li><p><code>SamplingMethodDescription</code>: indicate category from the following list: volunteers, course credit, paid, other (if more than one of these categories is relevant, enter both, separated by a semi-colon such as: volunteers; paid)</p></li>
+<li><p><code>FemaleParticipantsNumber</code>: total number of female participants in the study</p></li>
+<li><p><code>MaleParticipantsNumber</code>: total number of male participants in the study<br>
+</p></li>
+<li><p><code>MeanYearsEducation</code>: mean years of education of the sample</p></li>
+<li><p><code>MusicPrimaryGenre</code>: please enter the main/primary genre of music studied (if any) such as classical, pop, jazz, etc. If a study sampled equally across multiple genres, please enter these separated by semi-colons, for instance: classical; rock; punk. artificial = for artificial stimuli (beeps, clicks, sine waves, single sounds)</p></li>
+<li><p><code>MusicOriginCountry</code>: If a study used standard excerpts from styles such as classical, pop, rock, or jazz, please write Western, as it is likely such music came from US/UK/Western Europe primarily. For other, more international styles, please specify country from which the music comes (e.g., China, India).<br>
+If a study utilised music from multiple origin counties, please enter these separated by semi-colons, for instance: Western; Mali; Uruguay</p></li>
+<li><p><code>MusicSource</code>: indicate category from the following list: precomposed, semi-precomposed, experimenter-created, other (note: ‘precomposed’ refers to music that was not composed specifically for the study, e.g.&nbsp;a Beethoven symphony or a commercially released pop song; ‘semi-precomposed’ refers to precomposed music that has been manipulated by the experimenter- for instance, a Beethoven symphony was converted to a single-line MIDI melody for the experiment)</p></li>
+<li><p><code>Comments</code>: you may use this column to optionally enter any problems/issues that you would like a second coder to check over; if none, then please just leave blank!</p></li>
+<li><p><code>CoderName</code>: enter your name</p></li>
+<li><p><code>Keywords</code>: enter all keywords as listed at the start of the article, separated by semi-colons, for instance: functional harmony; extended tonality; harmonic substitutions; music perception; musical syntax</p></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

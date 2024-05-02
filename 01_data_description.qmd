@@ -58,6 +58,40 @@ We have created a identifier for articles (`paper_id`), studies (`study_id`), an
 * `gender_balance` is the proportion of females in the samples
 * ... (to be continued)
 
+* `PaperTitle`: enter the exact title of the article 
+* `Year`: year published 
+* `Journal`: journal published in 
+* `FirstAuthorName`: enter the first author’s name in this format: Jakubowski, Kelly 
+* `FirstAuthorCountry`: enter the country of the institution where the first author works 
+ 
+* `CountryDataCollected`: enter the country(s) where the data was collected. If more than one country (e.g., for a cross-cultural study), please enter ALL countries where data was collected, separated by semi-colons, for example: UK; Mali; Uruguay 
+OR online = for online studies with no origin country data collected 
+ 
+* `SamplePrimaryCountryofOrigin`: enter the country where the majority of the sample came from (for instance, if 54% of the participants were from the UK, enter UK). If sample came equally from multiple countries (e.g. 1/3 of participants came from each of 3 countries), OR if the researchers explicitly recruited from different countries for the sake of making cross-national comparisons, then enter all countries separated by semi-colons, for example: UK; Mali; Uruguay  
+* `Ethnicity`: if described, enter the ethnicity of the majority of the sample (e.g. if more than 50% were white, enter white). If split equally across ethnicities, you can enter more than one ethnicity, separated by semi-colons. Categories to be used here: Asian, black, white, Hispanic, other 
+* `SampleSize`: enter total sample size as a number 
+* `SampleAgeMean`: enter mean age of the sample 
+* `SampleAgeSD`: enter the standard deviation of the age of the sample 
+* `SampleOtherDescription`: if other description of sample such as ‘university students’ or ‘undergraduate students’ is provided, please add this here. Please try and retain consistent category labels across studies 
+ 
+* `SampleMusicianshipDescription`: if the sample is described by the authors as only consisting of musicians, write ‘musicians’; if described as only non-musicians, write ‘non-musicians’; if sample included both, include both labels separated by a semi-colon (musicians; non-musicians) 
+  
+* `SamplingMethodDescription`: indicate category from the following list: volunteers, course credit, paid, other (if more than one of these categories is relevant, enter both, separated by a semi-colon such as: volunteers; paid) 
+* `FemaleParticipantsNumber`: total number of female participants in the study 
+* `MaleParticipantsNumber`: total number of male participants in the study   
+* `MeanYearsEducation`: mean years of education of the sample 
+* `MusicPrimaryGenre`: please enter the main/primary genre of music studied (if any) such as classical, pop, jazz, etc. If a study sampled equally across multiple genres, please enter these separated by semi-colons, for instance: classical; rock; punk. artificial = for artificial stimuli (beeps, clicks, sine waves, single sounds) 
+* `MusicOriginCountry`: If a study used standard excerpts from styles such as classical, pop, rock, or jazz, please write Western, as it is likely such music came from US/UK/Western Europe primarily. For other, more international styles, please specify country from which the music comes (e.g., China, India).  
+If a study utilised music from multiple origin counties, please enter these separated by semi-colons, for instance: Western; Mali; Uruguay 
+  
+* `MusicSource`: indicate category from the following list: precomposed, semi-precomposed, experimenter-created, other (note: ‘precomposed’ refers to music that was not composed specifically for the study, e.g. a Beethoven symphony or a commercially released pop song; ‘semi-precomposed’ refers to precomposed music that has been manipulated by the experimenter- for instance, a Beethoven symphony was converted to a single-line MIDI melody for the experiment) 
+  
+* `Comments`: you may use this column to optionally enter any problems/issues that you would like a second coder to check over; if none, then please just leave blank! 
+  
+* `CoderName`: enter your name 
+  
+* `Keywords`: enter all keywords as listed at the start of the article, separated by semi-colons, for instance: functional harmony; extended tonality; harmonic substitutions; music perception; musical syntax 
+
 
 ```{r}
 #| eval: true
