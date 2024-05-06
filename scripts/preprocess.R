@@ -1,7 +1,7 @@
 # preprocess.R
 # WEIRD article
 # T. Eerola, 23/3/2024
-# Status: Requires more work
+# Status: Complete
 
 cat("Preprocessing.....")
 
@@ -10,7 +10,6 @@ cat(paste('\nUnique first authors:',length(unique(d$FirstAuthorName_cleaned))))
 t<-table(d$FirstAuthorName_cleaned)
 t<-dplyr::arrange(data.frame(t),-Freq)
 #head(t,15)
-
 
 #### 1. Create Human studies index -------------
 cat("\n1. Studies with samples (human studies)")
@@ -375,7 +374,7 @@ d$gender_balance <- d$FemaleParticipantsNumber / (d$FemaleParticipantsNumber+d$M
 d$SampleSizeAggregated <- d$FemaleParticipantsNumber+d$MaleParticipantsNumber
 
 #### 11. WEIRD index  --------------------
-cat("11. WERID indicator for countries\n")
+cat("11. WEIRD indicator for countries\n")
 
 WEIRD_country_index <- "Krys"
 # options are: "Krys", "WEOG" or "Muthukhrisna"
@@ -672,44 +671,6 @@ cat(nrow(DF)) # 1589
 #head(DF[,24:29],10)
 #head(DF2[,24:29],10)
 
-
-
-#### 14 Optional: Manual Quality Control --------
-# compare d and df
-#cat("Quality control:\n")
-
-# print((table(d$SamplingMethodDescription)))
-# print((table(df$SamplingMethodDescription)))
-# print((table(df$sample_sampling_method_description))) # correct!
-# 
-# print(cbind(d$paper_id_study_id,d$SamplingMethodDescription))
-# print(cbind(df$paper_id_study_id,df$SamplingMethodDescription))
-# print(cbind(df$paper_id_study_id,df$sample_sampling_method_description,df$sample_id)) # correct
-
-# print((table(d$FemaleParticipantsNumber)))
-# print((table(df$sample_gender_balance)))
-# print((table(df$sample_gender_balance))) # correct!
-
-# print(cbind(d$paper_id_study_id,d$gender_balance,d$SampleSizeAggregated))
-# print(cbind(df$paper_id_study_id,df$sample_gender_balance,df$sample_size))
-# print(cbind(df$paper_id_study_id,df$sample_gender_balance,df$sample_id)) # correct
-# 
-# print(cbind(df$paper_id_study_id,df$sample_size,df$sample_id)) # correct
-
-#print(cbind(df$paper_id_study_id,df$sample_agemean,df$sample_id)) # correct
-
-# dim(df)
-#df$sample_agemean[is.na(df$sample_agemean)]<-'delete'
-# remove redundant sample0 rows if their sample size is also NA
-#df2 <- dplyr::filter(df,sample_id!='sample0' | !is.na(sample_size))
-#dim(df2)
-
-# these are calculated on the expanded data
-# df2$sample_size
-# df2$sample_agemean
-# df2$sample_agesd
-
-#print(cbind(df2$paper_id_study_id,df2$sample_size,df2$sample_id))
 
 #### 13. Clean up ------------------
 cat("\n15. Clean up")

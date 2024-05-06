@@ -1,5 +1,82 @@
 [
   {
+    "objectID": "05_keywords.html",
+    "href": "05_keywords.html",
+    "title": "WEIRD",
+    "section": "",
+    "text": "Create Figure 3 showing rankings of keywords across six variables.\n\nsource('scripts/keyword_analysis.R')",
+    "crumbs": [
+      "Visualisations",
+      "Keywords"
+    ]
+  },
+  {
+    "objectID": "05_keywords.html#keywords",
+    "href": "05_keywords.html#keywords",
+    "title": "WEIRD",
+    "section": "",
+    "text": "Create Figure 3 showing rankings of keywords across six variables.\n\nsource('scripts/keyword_analysis.R')",
+    "crumbs": [
+      "Visualisations",
+      "Keywords"
+    ]
+  },
+  {
+    "objectID": "03_maps.html",
+    "href": "03_maps.html",
+    "title": "WEIRD",
+    "section": "",
+    "text": "Produce two global maps together with some other information about the sample.\n\nsource('scripts/preprocess_for_maps.R')    # prepare country information  \n\nLinking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE\n\nsource('scripts/WEIRD_map.R')              # Extra plot\n\nWarning: Some values were not matched unambiguously: Europe, NA, online\n\n\n\n\n\n\n\n\nsource('scripts/visualise_on_map.R')       # Figure 1\n\nWarning: Some values were not matched unambiguously: Europe, NA, online",
+    "crumbs": [
+      "Visualisations",
+      "Maps"
+    ]
+  },
+  {
+    "objectID": "03_maps.html#maps",
+    "href": "03_maps.html#maps",
+    "title": "WEIRD",
+    "section": "",
+    "text": "Produce two global maps together with some other information about the sample.\n\nsource('scripts/preprocess_for_maps.R')    # prepare country information  \n\nLinking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE\n\nsource('scripts/WEIRD_map.R')              # Extra plot\n\nWarning: Some values were not matched unambiguously: Europe, NA, online\n\n\n\n\n\n\n\n\nsource('scripts/visualise_on_map.R')       # Figure 1\n\nWarning: Some values were not matched unambiguously: Europe, NA, online",
+    "crumbs": [
+      "Visualisations",
+      "Maps"
+    ]
+  },
+  {
+    "objectID": "01_data_description.html",
+    "href": "01_data_description.html",
+    "title": "Data pre-processing",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\n\nThe manually annotated data titled data/WEIRD coding final corr names.csv was cleaned through process captured in weird data cleaning.R script.\nHere we take this manually annotated and cleaned data, data/WEIRD_06_05_2024.csv.\nd &lt;- read.csv('data/WEIRD_06_05_2024.csv',header = TRUE)\nknitr::kable(d[1:5,1:5])\n\n\n\n\n\n\n\n\n\n\nX\nPaperTitle\nYear\nJournal\nFirstAuthorName_cleaned\n\n\n\n\n1\nCorroborating external observation by cognitve data in the description and modelling of traditional music\n2010\nMusicae Scientiae\nArom, Simha\n\n\n2\nLooking into the eyes of a conductor performing Lerdahl’s “Time after Time”\n2010\nMusicae Scientiae\nBigand, Emmanuel\n\n\n3\nAuditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna\n2010\nMusicae Scientiae\nAdesi, Anna Rita\n\n\n4\nThe Difficulty of discerning between composed and improvised nusic\n2010\nMusicae Scientiae\nLehmann, Andreas C.\n\n\n5\nMusical Parameters and Children’s Images of motion\n2010\nMusicae Scientiae\nEitan, Zohar\n\n\n\n\n\n\nIn the preprocessing, we add elements to the data (WEIRD and non-WEIRD country codes, paper, study, sample ids, expand samples, and various other operations).\nThis preprocessing creates four data frames used in subsequent analyses.\n\nsource('scripts/preprocess.R')\n\nPreprocessing.....\nNumber of coded studies: 1622\nUnique first authors: 1021\n1. Studies with samples (human studies)\n2. Studies with music (music studies)\n3. Create paper_ids \n...Unique studies: 1360\n4. Add study ids\n5. Expand into samples....Loop across papers with multiple studies to get multiple samples (;)\n6. Clean variables \n7. Combine expanded and original data \n8. Convert online studies based on SamplePrimaryCountryofOrigin\n6. Handle online origin\n9. Create UIDs\n10. Gender balance indicators\n11. WEIRD indicator for countries\nUsing WEIRD_country_index: Krys\n11. Calculate weighted mean and sd age \n12. Check counts of the expanded data frame\n...Original: 1622 obs\n...Expanded: 1743 obs\n...Within expanded:1622\n...Number of papers (study1 and sample0): 1360\nFinal dataframes:\n D = human studies:\n1532\n DF = human studies with samples:\n1653\n Unique samples in DF: 1589\n DF = human studies with distinct samples:\n1589\n15. Clean up\n\n\n\n\n\nd is the original data with 1622 observations. Each row refers to a study (not article).\nD is a version of the original data containing empirical/human studies with 1532 observations. Each row refers to a study (not article).\ndf contains samples within studies with 1743 observations.\nDF contains samples with redundant samples removed. It has 1589 observations.\n\nWithin the data, there are 1360 articles.\nWe have created a identifier for articles (paper_id), studies (study_id), and samples (sample_id) and a unique identifier which combines these (paper_id_study_id).\n\n\n\n\nCountryDataCollected_WEOG is based on WEIRD country index derived from Krys et al., (2014).\nFirstAuthorCountry_WEOG is based on WEIRD country index derived from Krys et al., (2014).\ngender_balance is the proportion of females in the samples\n… (to be continued)\nPaperTitle: enter the exact title of the article\nYear: year published\nJournal: journal published in\nFirstAuthorName: enter the first author’s name in this format: Jakubowski, Kelly\nFirstAuthorCountry: enter the country of the institution where the first author works\nCountryDataCollected: enter the country(s) where the data was collected. If more than one country (e.g., for a cross-cultural study), please enter ALL countries where data was collected, separated by semi-colons, for example: UK; Mali; Uruguay OR online = for online studies with no origin country data collected\nSamplePrimaryCountryofOrigin: enter the country where the majority of the sample came from (for instance, if 54% of the participants were from the UK, enter UK). If sample came equally from multiple countries (e.g. 1/3 of participants came from each of 3 countries), OR if the researchers explicitly recruited from different countries for the sake of making cross-national comparisons, then enter all countries separated by semi-colons, for example: UK; Mali; Uruguay\n\nEthnicity: if described, enter the ethnicity of the majority of the sample (e.g. if more than 50% were white, enter white). If split equally across ethnicities, you can enter more than one ethnicity, separated by semi-colons. Categories to be used here: Asian, black, white, Hispanic, other\nSampleSize: enter total sample size as a number\nSampleAgeMean: enter mean age of the sample\nSampleAgeSD: enter the standard deviation of the age of the sample\nSampleOtherDescription: if other description of sample such as ‘university students’ or ‘undergraduate students’ is provided, please add this here. Please try and retain consistent category labels across studies\nSampleMusicianshipDescription: if the sample is described by the authors as only consisting of musicians, write ‘musicians’; if described as only non-musicians, write ‘non-musicians’; if sample included both, include both labels separated by a semi-colon (musicians; non-musicians)\nSamplingMethodDescription: indicate category from the following list: volunteers, course credit, paid, other (if more than one of these categories is relevant, enter both, separated by a semi-colon such as: volunteers; paid)\nFemaleParticipantsNumber: total number of female participants in the study\nMaleParticipantsNumber: total number of male participants in the study\n\nMeanYearsEducation: mean years of education of the sample\nMusicPrimaryGenre: please enter the main/primary genre of music studied (if any) such as classical, pop, jazz, etc. If a study sampled equally across multiple genres, please enter these separated by semi-colons, for instance: classical; rock; punk. artificial = for artificial stimuli (beeps, clicks, sine waves, single sounds)\nMusicOriginCountry: If a study used standard excerpts from styles such as classical, pop, rock, or jazz, please write Western, as it is likely such music came from US/UK/Western Europe primarily. For other, more international styles, please specify country from which the music comes (e.g., China, India).\nIf a study utilised music from multiple origin counties, please enter these separated by semi-colons, for instance: Western; Mali; Uruguay\nMusicSource: indicate category from the following list: precomposed, semi-precomposed, experimenter-created, other (note: ‘precomposed’ refers to music that was not composed specifically for the study, e.g. a Beethoven symphony or a commercially released pop song; ‘semi-precomposed’ refers to precomposed music that has been manipulated by the experimenter- for instance, a Beethoven symphony was converted to a single-line MIDI melody for the experiment)\nComments: you may use this column to optionally enter any problems/issues that you would like a second coder to check over; if none, then please just leave blank!\nCoderName: enter your name\nKeywords: enter all keywords as listed at the start of the article, separated by semi-colons, for instance: functional harmony; extended tonality; harmonic substitutions; music perception; musical syntax\n\nSave (if necessary)\nneeds_saving &lt;- FALSE\nif(needs_saving==TRUE){\n  save(d,df,D,DF,file='data/WEIRD_data.Rdata')\n}",
+    "crumbs": [
+      "Data",
+      "Data pre-processing"
+    ]
+  },
+  {
+    "objectID": "01_data_description.html#libraries",
+    "href": "01_data_description.html#libraries",
+    "title": "Data pre-processing",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\n\nThe manually annotated data titled data/WEIRD coding final corr names.csv was cleaned through process captured in weird data cleaning.R script.\nHere we take this manually annotated and cleaned data, data/WEIRD_06_05_2024.csv.\nd &lt;- read.csv('data/WEIRD_06_05_2024.csv',header = TRUE)\nknitr::kable(d[1:5,1:5])\n\n\n\n\n\n\n\n\n\n\nX\nPaperTitle\nYear\nJournal\nFirstAuthorName_cleaned\n\n\n\n\n1\nCorroborating external observation by cognitve data in the description and modelling of traditional music\n2010\nMusicae Scientiae\nArom, Simha\n\n\n2\nLooking into the eyes of a conductor performing Lerdahl’s “Time after Time”\n2010\nMusicae Scientiae\nBigand, Emmanuel\n\n\n3\nAuditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna\n2010\nMusicae Scientiae\nAdesi, Anna Rita\n\n\n4\nThe Difficulty of discerning between composed and improvised nusic\n2010\nMusicae Scientiae\nLehmann, Andreas C.\n\n\n5\nMusical Parameters and Children’s Images of motion\n2010\nMusicae Scientiae\nEitan, Zohar",
+    "crumbs": [
+      "Data",
+      "Data pre-processing"
+    ]
+  },
+  {
+    "objectID": "01_data_description.html#preprocess",
+    "href": "01_data_description.html#preprocess",
+    "title": "Data pre-processing",
+    "section": "",
+    "text": "In the preprocessing, we add elements to the data (WEIRD and non-WEIRD country codes, paper, study, sample ids, expand samples, and various other operations).\nThis preprocessing creates four data frames used in subsequent analyses.\n\nsource('scripts/preprocess.R')\n\nPreprocessing.....\nNumber of coded studies: 1622\nUnique first authors: 1021\n1. Studies with samples (human studies)\n2. Studies with music (music studies)\n3. Create paper_ids \n...Unique studies: 1360\n4. Add study ids\n5. Expand into samples....Loop across papers with multiple studies to get multiple samples (;)\n6. Clean variables \n7. Combine expanded and original data \n8. Convert online studies based on SamplePrimaryCountryofOrigin\n6. Handle online origin\n9. Create UIDs\n10. Gender balance indicators\n11. WEIRD indicator for countries\nUsing WEIRD_country_index: Krys\n11. Calculate weighted mean and sd age \n12. Check counts of the expanded data frame\n...Original: 1622 obs\n...Expanded: 1743 obs\n...Within expanded:1622\n...Number of papers (study1 and sample0): 1360\nFinal dataframes:\n D = human studies:\n1532\n DF = human studies with samples:\n1653\n Unique samples in DF: 1589\n DF = human studies with distinct samples:\n1589\n15. Clean up\n\n\n\n\n\nd is the original data with 1622 observations. Each row refers to a study (not article).\nD is a version of the original data containing empirical/human studies with 1532 observations. Each row refers to a study (not article).\ndf contains samples within studies with 1743 observations.\nDF contains samples with redundant samples removed. It has 1589 observations.\n\nWithin the data, there are 1360 articles.\nWe have created a identifier for articles (paper_id), studies (study_id), and samples (sample_id) and a unique identifier which combines these (paper_id_study_id).\n\n\n\n\nCountryDataCollected_WEOG is based on WEIRD country index derived from Krys et al., (2014).\nFirstAuthorCountry_WEOG is based on WEIRD country index derived from Krys et al., (2014).\ngender_balance is the proportion of females in the samples\n… (to be continued)\nPaperTitle: enter the exact title of the article\nYear: year published\nJournal: journal published in\nFirstAuthorName: enter the first author’s name in this format: Jakubowski, Kelly\nFirstAuthorCountry: enter the country of the institution where the first author works\nCountryDataCollected: enter the country(s) where the data was collected. If more than one country (e.g., for a cross-cultural study), please enter ALL countries where data was collected, separated by semi-colons, for example: UK; Mali; Uruguay OR online = for online studies with no origin country data collected\nSamplePrimaryCountryofOrigin: enter the country where the majority of the sample came from (for instance, if 54% of the participants were from the UK, enter UK). If sample came equally from multiple countries (e.g. 1/3 of participants came from each of 3 countries), OR if the researchers explicitly recruited from different countries for the sake of making cross-national comparisons, then enter all countries separated by semi-colons, for example: UK; Mali; Uruguay\n\nEthnicity: if described, enter the ethnicity of the majority of the sample (e.g. if more than 50% were white, enter white). If split equally across ethnicities, you can enter more than one ethnicity, separated by semi-colons. Categories to be used here: Asian, black, white, Hispanic, other\nSampleSize: enter total sample size as a number\nSampleAgeMean: enter mean age of the sample\nSampleAgeSD: enter the standard deviation of the age of the sample\nSampleOtherDescription: if other description of sample such as ‘university students’ or ‘undergraduate students’ is provided, please add this here. Please try and retain consistent category labels across studies\nSampleMusicianshipDescription: if the sample is described by the authors as only consisting of musicians, write ‘musicians’; if described as only non-musicians, write ‘non-musicians’; if sample included both, include both labels separated by a semi-colon (musicians; non-musicians)\nSamplingMethodDescription: indicate category from the following list: volunteers, course credit, paid, other (if more than one of these categories is relevant, enter both, separated by a semi-colon such as: volunteers; paid)\nFemaleParticipantsNumber: total number of female participants in the study\nMaleParticipantsNumber: total number of male participants in the study\n\nMeanYearsEducation: mean years of education of the sample\nMusicPrimaryGenre: please enter the main/primary genre of music studied (if any) such as classical, pop, jazz, etc. If a study sampled equally across multiple genres, please enter these separated by semi-colons, for instance: classical; rock; punk. artificial = for artificial stimuli (beeps, clicks, sine waves, single sounds)\nMusicOriginCountry: If a study used standard excerpts from styles such as classical, pop, rock, or jazz, please write Western, as it is likely such music came from US/UK/Western Europe primarily. For other, more international styles, please specify country from which the music comes (e.g., China, India).\nIf a study utilised music from multiple origin counties, please enter these separated by semi-colons, for instance: Western; Mali; Uruguay\nMusicSource: indicate category from the following list: precomposed, semi-precomposed, experimenter-created, other (note: ‘precomposed’ refers to music that was not composed specifically for the study, e.g. a Beethoven symphony or a commercially released pop song; ‘semi-precomposed’ refers to precomposed music that has been manipulated by the experimenter- for instance, a Beethoven symphony was converted to a single-line MIDI melody for the experiment)\nComments: you may use this column to optionally enter any problems/issues that you would like a second coder to check over; if none, then please just leave blank!\nCoderName: enter your name\nKeywords: enter all keywords as listed at the start of the article, separated by semi-colons, for instance: functional harmony; extended tonality; harmonic substitutions; music perception; musical syntax\n\nSave (if necessary)\nneeds_saving &lt;- FALSE\nif(needs_saving==TRUE){\n  save(d,df,D,DF,file='data/WEIRD_data.Rdata')\n}",
+    "crumbs": [
+      "Data",
+      "Data pre-processing"
+    ]
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "WEIRD",
@@ -14,131 +91,36 @@
     "text": "Contents\n\n1 Data description\n2 Summary results\n3 Maps\n4 Trends\n5 Keywords"
   },
   {
-    "objectID": "index.html#table-and-manuscript-stats",
-    "href": "index.html#table-and-manuscript-stats",
-    "title": "WEIRD",
-    "section": "Table and manuscript stats",
-    "text": "Table and manuscript stats\nsource(‘scripts/table1.R’) # creates numbers for Table 1 source(‘scripts/report_numbers_for_MS.R’) # create numbers for the ms\n\nMAPS —————————-\nsource(‘scripts/preprocess_for_maps.R’) # prepare country information\nsource(‘scripts/WEIRD_map.R’) # Extra plot source(‘scripts/visualise_on_map.R’) # Figure 1 (4 sub-plots)\n\n\nTRENDS —————————-\nsource(‘scripts/trends.R’) # Visualise various trends (Figure 2)\n\n\nKEYWORD ————————-\nsource(‘scripts/keyword_analysis.R’) # creates figure (OK)\nsource(‘scripts/keyword_analysis_multiple.R’) # explores multiple divisions for keywords (in progress)\n#source(‘scripts/co-occurrence_visualisation.R’) # not needed"
-  },
-  {
-    "objectID": "01_data_description.html",
-    "href": "01_data_description.html",
-    "title": "Data pre-processing",
-    "section": "",
-    "text": "library(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\n\nThe manually annotated data titled data/WEIRD coding final corr names.csv was cleaned through process captured in weird data cleaning.R script.\nHere we take this manually annotated and cleaned data, data/WEIRD part cleaned Feb24.csv and in the next step, add elements to it (WEIRD, non-WEIRD country codes, paper, study, sample ids, etc.).\nd &lt;- read.csv('data/WEIRD part cleaned Feb24.csv',header = TRUE)\nknitr::kable(d[1:5,1:5])\n\n\n\n\n\n\n\n\n\n\nPaperTitle\nYear\nJournal\nFirstAuthorName_cleaned\nFirstAuthorCountry\n\n\n\n\nCorroborating external observation by cognitve data in the description and modelling of traditional music\n2010\nMusicae Scientiae\nArom, Simha\nFrance\n\n\nLooking into the eyes of a conductor performing Lerdahl’s “Time after Time”\n2010\nMusicae Scientiae\nBigand, Emmanuel\nFrance\n\n\nAuditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna\n2010\nMusicae Scientiae\nAdesi, Anna Rita\nItaly\n\n\nThe Difficulty of discerning between composed and improvised nusic\n2010\nMusicae Scientiae\nLehmann, Andreas C.\nGermany\n\n\nMusical Parameters and Children’s Images of motion\n2010\nMusicae Scientiae\nEitan, Zohar\nIsrael\n\n\n\n\n\n\nAdd several variables to the data (explanations below). This process creates four data frames used in subsequent analyses.\n\nsource('scripts/preprocess.R')\n\nPreprocessing.....\nNumber of coded studies: 1622\nUnique first authors: 1021\n1. Studies with samples (human studies)\n2. Studies with music (music studies)\n3. Create paper_ids \n...Unique studies: 1360\n4. Add study ids\n5. Expand into samples....Loop across papers with multiple studies to get multiple samples (;)\n6. Clean variables \n7. Combine expanded and original data \n8. Convert online studies based on SamplePrimaryCountryofOrigin\n6. Handle online origin\n9. Create UIDs\n10. Gender balance indicators\n11. WERID indicator for countries\nUsing WEIRD_country_index: Krys\n11. Calculate weighted mean and sd age \n12. Check counts of the expanded data frame\n...Original: 1622 obs\n...Expanded: 1743 obs\n...Within expanded:1622\n...Number of papers (study1 and sample0): 1360\nFinal dataframes:\n D = human studies:\n1532\n DF = human studies with samples:\n1653\n Unique samples in DF: 1589\n DF = human studies with distinct samples:\n1589\n15. Clean up\n\n\n\n\n\nd is the original data with 1622 observations. Each row refers to a study (not article).\nD is a version of the original data containing empirical/human studies with 1532 observations. Each row refers to a study (not article).\ndf contains samples within studies with 1743 observations.\nDF contains samples with redundant samples removed. It has 1589 observations.\n\nWithin the data, there are 1360 articles.\nWe have created a identifier for articles (paper_id), studies (study_id), and samples (sample_id) and a unique identifier which combines these (paper_id_study_id).\n\n\n\n\nCountryDataCollected_WEOG is based on WEIRD country index derived from Krys et al., (2014).\nFirstAuthorCountry_WEOG is based on WEIRD country index derived from Krys et al., (2014).\ngender_balance is the proportion of females in the samples\n… (to be continued)\n\n\nnames(d)\n\n [1] \"PaperTitle\"                                  \n [2] \"Year\"                                        \n [3] \"Journal\"                                     \n [4] \"FirstAuthorName_cleaned\"                     \n [5] \"FirstAuthorCountry\"                          \n [6] \"CountryDataCollected\"                        \n [7] \"SamplePrimaryCountryofOrigin\"                \n [8] \"Ethnicity\"                                   \n [9] \"SampleSize\"                                  \n[10] \"SampleAgeMean\"                               \n[11] \"SampleAgeSD\"                                 \n[12] \"FemaleParticipantsNumber\"                    \n[13] \"MaleParticipantsNumber\"                      \n[14] \"SampleMusicianshipDescription\"               \n[15] \"SamplingMethodDescription\"                   \n[16] \"SampleOtherDescription\"                      \n[17] \"MeanYearsEducation\"                          \n[18] \"MusicPrimaryGenre\"                           \n[19] \"MusicOriginCountry\"                          \n[20] \"MusicSource\"                                 \n[21] \"Comments\"                                    \n[22] \"CoderName\"                                   \n[23] \"Keywords\"                                    \n[24] \"humansample\"                                 \n[25] \"musicstudies\"                                \n[26] \"paper_id\"                                    \n[27] \"study_id\"                                    \n[28] \"paper_id_study_id\"                           \n[29] \"sample_id\"                                   \n[30] \"sample_size\"                                 \n[31] \"sample_agemean\"                              \n[32] \"sample_agesd\"                                \n[33] \"sample_female\"                               \n[34] \"sample_male\"                                 \n[35] \"sample_country_data_collected\"               \n[36] \"sample_sampling_method_description\"          \n[37] \"SamplePrimaryCountryofOrigin_online_inferred\"\n[38] \"gender_balance\"                              \n[39] \"SampleSizeAggregated\"                        \n[40] \"CountryDataCollected_WEOG\"                   \n[41] \"FirstAuthorCountry_WEOG\"                     \n\n\n\n\n\n\nneeds_saving &lt;- FALSE\nif(needs_saving==TRUE){\n  save(d,df,D,DF,file='data/WEIRD_data.Rdata')\n}",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#libraries",
-    "href": "01_data_description.html#libraries",
-    "title": "Data pre-processing",
-    "section": "",
-    "text": "library(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\n\nThe manually annotated data titled data/WEIRD coding final corr names.csv was cleaned through process captured in weird data cleaning.R script.\nHere we take this manually annotated and cleaned data, data/WEIRD part cleaned Feb24.csv and in the next step, add elements to it (WEIRD, non-WEIRD country codes, paper, study, sample ids, etc.).\nd &lt;- read.csv('data/WEIRD part cleaned Feb24.csv',header = TRUE)\nknitr::kable(d[1:5,1:5])\n\n\n\n\n\n\n\n\n\n\nPaperTitle\nYear\nJournal\nFirstAuthorName_cleaned\nFirstAuthorCountry\n\n\n\n\nCorroborating external observation by cognitve data in the description and modelling of traditional music\n2010\nMusicae Scientiae\nArom, Simha\nFrance\n\n\nLooking into the eyes of a conductor performing Lerdahl’s “Time after Time”\n2010\nMusicae Scientiae\nBigand, Emmanuel\nFrance\n\n\nAuditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna\n2010\nMusicae Scientiae\nAdesi, Anna Rita\nItaly\n\n\nThe Difficulty of discerning between composed and improvised nusic\n2010\nMusicae Scientiae\nLehmann, Andreas C.\nGermany\n\n\nMusical Parameters and Children’s Images of motion\n2010\nMusicae Scientiae\nEitan, Zohar\nIsrael",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#data",
-    "href": "01_data_description.html#data",
-    "title": "WEIRD",
-    "section": "Data",
-    "text": "Data\nTake the manually annotated data.\nrm(list=ls())\nd &lt;- read.csv('data/WEIRD part cleaned Feb24.csv',header = TRUE)\nknitr::kable(d[1:5,1:5])\n\n\n\n\n\n\n\n\n\n\nPaperTitle\nYear\nJournal\nFirstAuthorName_cleaned\nFirstAuthorCountry\n\n\n\n\nCorroborating external observation by cognitve data in the description and modelling of traditional music\n2010\nMusicae Scientiae\nArom, Simha\nFrance\n\n\nLooking into the eyes of a conductor performing Lerdahl’s “Time after Time”\n2010\nMusicae Scientiae\nBigand, Emmanuel\nFrance\n\n\nAuditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna\n2010\nMusicae Scientiae\nAdesi, Anna Rita\nItaly\n\n\nThe Difficulty of discerning between composed and improvised nusic\n2010\nMusicae Scientiae\nLehmann, Andreas C.\nGermany\n\n\nMusical Parameters and Children’s Images of motion\n2010\nMusicae Scientiae\nEitan, Zohar\nIsrael",
-    "crumbs": [
-      "Data",
-      "Libraries"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#summaries",
-    "href": "01_data_description.html#summaries",
-    "title": "WEIRD",
-    "section": "Summaries",
-    "text": "Summaries\nsave(d,df,D,DF,file='WEIRD_data.Rdata')",
-    "crumbs": [
-      "Data",
-      "Libraries"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#preprocess",
-    "href": "01_data_description.html#preprocess",
-    "title": "Data pre-processing",
-    "section": "",
-    "text": "Add several variables to the data (explanations below). This process creates four data frames used in subsequent analyses.\n\nsource('scripts/preprocess.R')\n\nPreprocessing.....\nNumber of coded studies: 1622\nUnique first authors: 1021\n1. Studies with samples (human studies)\n2. Studies with music (music studies)\n3. Create paper_ids \n...Unique studies: 1360\n4. Add study ids\n5. Expand into samples....Loop across papers with multiple studies to get multiple samples (;)\n6. Clean variables \n7. Combine expanded and original data \n8. Convert online studies based on SamplePrimaryCountryofOrigin\n6. Handle online origin\n9. Create UIDs\n10. Gender balance indicators\n11. WERID indicator for countries\nUsing WEIRD_country_index: Krys\n11. Calculate weighted mean and sd age \n12. Check counts of the expanded data frame\n...Original: 1622 obs\n...Expanded: 1743 obs\n...Within expanded:1622\n...Number of papers (study1 and sample0): 1360\nFinal dataframes:\n D = human studies:\n1532\n DF = human studies with samples:\n1653\n Unique samples in DF: 1589\n DF = human studies with distinct samples:\n1589\n15. Clean up\n\n\n\n\n\nd is the original data with 1622 observations. Each row refers to a study (not article).\nD is a version of the original data containing empirical/human studies with 1532 observations. Each row refers to a study (not article).\ndf contains samples within studies with 1743 observations.\nDF contains samples with redundant samples removed. It has 1589 observations.\n\nWithin the data, there are 1360 articles.\nWe have created a identifier for articles (paper_id), studies (study_id), and samples (sample_id) and a unique identifier which combines these (paper_id_study_id).\n\n\n\n\nCountryDataCollected_WEOG is based on WEIRD country index derived from Krys et al., (2014).\nFirstAuthorCountry_WEOG is based on WEIRD country index derived from Krys et al., (2014).\ngender_balance is the proportion of females in the samples\n… (to be continued)\n\n\nnames(d)\n\n [1] \"PaperTitle\"                                  \n [2] \"Year\"                                        \n [3] \"Journal\"                                     \n [4] \"FirstAuthorName_cleaned\"                     \n [5] \"FirstAuthorCountry\"                          \n [6] \"CountryDataCollected\"                        \n [7] \"SamplePrimaryCountryofOrigin\"                \n [8] \"Ethnicity\"                                   \n [9] \"SampleSize\"                                  \n[10] \"SampleAgeMean\"                               \n[11] \"SampleAgeSD\"                                 \n[12] \"FemaleParticipantsNumber\"                    \n[13] \"MaleParticipantsNumber\"                      \n[14] \"SampleMusicianshipDescription\"               \n[15] \"SamplingMethodDescription\"                   \n[16] \"SampleOtherDescription\"                      \n[17] \"MeanYearsEducation\"                          \n[18] \"MusicPrimaryGenre\"                           \n[19] \"MusicOriginCountry\"                          \n[20] \"MusicSource\"                                 \n[21] \"Comments\"                                    \n[22] \"CoderName\"                                   \n[23] \"Keywords\"                                    \n[24] \"humansample\"                                 \n[25] \"musicstudies\"                                \n[26] \"paper_id\"                                    \n[27] \"study_id\"                                    \n[28] \"paper_id_study_id\"                           \n[29] \"sample_id\"                                   \n[30] \"sample_size\"                                 \n[31] \"sample_agemean\"                              \n[32] \"sample_agesd\"                                \n[33] \"sample_female\"                               \n[34] \"sample_male\"                                 \n[35] \"sample_country_data_collected\"               \n[36] \"sample_sampling_method_description\"          \n[37] \"SamplePrimaryCountryofOrigin_online_inferred\"\n[38] \"gender_balance\"                              \n[39] \"SampleSizeAggregated\"                        \n[40] \"CountryDataCollected_WEOG\"                   \n[41] \"FirstAuthorCountry_WEOG\"",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
     "objectID": "02_summary_results.html",
     "href": "02_summary_results.html",
     "title": "Summaries",
     "section": "",
-    "text": "library(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\n\nlibrary(Hmisc)\nlibrary(DescTools)\nlibrary(weights)\nlibrary(boot)\nlibrary(papaja)\n\nload(file='data/WEIRD_data.Rdata')\n\n\n\nCompare descriptives across WEIRD and non-WEIRD countries across studies and samples (Table 1 in the manuscript).\nsource('scripts/table1.R')\n\nSample Size\n\n\nsample_country_data_collected_WEOG\nmedian\nlwr.ci\nupr.ci\n\n\n\n\nWEOG\n48.0\n42\n52\n\n\nNon-WEOG\n54.5\n38\n68\n\n\n\n[1] “\\(W = 103,461.00\\), \\(p = .486\\)”\n\nAge Mean\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n19.93\n16.79\n21.93\n\n\nWEIRD\n27.63\n25.38\n30.02\n\n\n\n[1] “t value = 9.59, df = 203.71, p-value = 0”\nAge SD:\n\nAge SD\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n3.72\n2.47\n4.63\n\n\nWEIRD\n7.12\n6.18\n8.07\n\n\n\n[1] “t value = 8.31, df = 151.22, p-value = 0”\nGender balance (country data collected):\n\nGender balance (Primary Country Data Collected)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 4.09, df = 139.18, p-value = 0”\nGender balance (based on first author country):\n\nGender balance (Primary Author Country)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 3.67, df = 109, p-value = 0.002”\nSolely musicians:\n\nMusical expertise across samples\n\n\nExpertise\n%\n\n\n\n\nmusicians\n30.5\n\n\nmusicians; non-musicians\n22.0\n\n\nnon-musicians\n10.1\n\n\nNot specified\n37.4\n\n\n\n[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]”\n\nSolely musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n381\nWEIRD\n0.3\n0.28\n0.33\n\n\nothers\n870\nWEIRD\n0.7\n0.67\n0.72\n\n\nmusicians\n48\nNon-WEIRD\n0.3\n0.23\n0.37\n\n\nothers\n112\nNon-WEIRD\n0.7\n0.63\n0.77\n\n\n\n[1] “Chi = 0.01 , p-value = 0.919540229885057”\nmusicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]”\n\nmusicians and non-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n662\nWEIRD\n0.53\n0.50\n0.56\n\n\nnon-musicians\n589\nWEIRD\n0.47\n0.44\n0.50\n\n\nmusicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\nnon-musicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\n\n[1] “Chi = 0.48 , p-value = 0.493753123438281”\nSolely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]”\n\nnon-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n1120\nWEIRD\n0.90\n0.88\n0.91\n\n\nnon-musicians\n131\nWEIRD\n0.10\n0.09\n0.12\n\n\nothers\n138\nNon-WEIRD\n0.86\n0.82\n0.92\n\n\nnon-musicians\n22\nNon-WEIRD\n0.14\n0.09\n0.19\n\n\n\n[1] “Chi = 1.58 , p-value = 0.222888555722139”\nUniversity sample: [1] “NA n=616: 49% [46% to 52%]” [1] “NA n=92: 57% [50% to 66%]”\n\nUniversity samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nNA\n635\nWEIRD\n0.51\n0.48\n0.54\n\n\nNA\n616\nWEIRD\n0.49\n0.46\n0.52\n\n\nNA\n68\nNon-WEIRD\n0.42\n0.35\n0.51\n\n\nNA\n92\nNon-WEIRD\n0.58\n0.50\n0.66\n\n\n\n[1] “Chi = 3.87 , p-value = 0.0499750124937531”\nRecruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]”\n\nVolunteer samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n881\nWEIRD\n0.70\n0.68\n0.73\n\n\nvolunteer\n370\nWEIRD\n0.30\n0.27\n0.32\n\n\nothers\n106\nNon-WEIRD\n0.66\n0.59\n0.74\n\n\nvolunteer\n54\nNon-WEIRD\n0.34\n0.27\n0.42\n\n\n\n[1] “Chi = 0.99 , p-value = 0.320865528891456”\nExperimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]”\n\nExperimenter selected. music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n514\nWEIRD\n0.66\n0.62\n0.69\n\n\nexperimenter\n270\nWEIRD\n0.34\n0.31\n0.38\n\n\nother\n116\nNon-WEIRD\n0.66\n0.59\n0.73\n\n\nexperimenter\n59\nNon-WEIRD\n0.34\n0.27\n0.41\n\n\n\n[1] “Chi = 0.01 , p-value = 0.924726224159515”\nWestern music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]”\n\nWestern music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n212\nWEIRD\n0.27\n0.24\n0.30\n\n\nwestern\n572\nWEIRD\n0.73\n0.70\n0.76\n\n\nother\n71\nNon-WEIRD\n0.41\n0.34\n0.48\n\n\nwestern\n104\nNon-WEIRD\n0.59\n0.53\n0.67\n\n\n\n[1] “Chi = 11.95 , p-value = 0.000546663726214618”\n\n\n\n\nsource('scripts/report_numbers_for_MS.R')\n\n[1] \"Mean weighted age:\"\n[1] 27.05683\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] 0.610955\n[1] \"First Author Country Prop:\"\n[1] \"US: 22\"\n[1] \"UK: 15\"\n[1] \"Aus: 11\"\n[1] \"Ger: 9\"\n[1] \"Can: 6\"\n[1] \"Fin: 5\"\n[1] \"WEIRD: 91\"\n[1] \"Prop of human studies:\"\n[1] 94\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23\"\n[1] \"UK: 12\"\n[1] \"Aus: 8\"\n[1] \"Ger: 7\"\n[1] \"Can: 7\"\n[1] \"Fin: 3\"\n[1] \"online: 9\"",
+    "text": "library(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\n\nlibrary(Hmisc)\nlibrary(DescTools)\nlibrary(weights)\nlibrary(boot)\nlibrary(papaja)\n\nload(file='data/WEIRD_data.Rdata')\n\n\n\nCompare descriptives across WEIRD and non-WEIRD countries across studies and samples (Table 1 in the manuscript).\nsource('scripts/table1.R')\n\nSample Size\n\n\nsample_country_data_collected_WEOG\nmedian\nlwr.ci\nupr.ci\n\n\n\n\nWEOG\n48.0\n43\n52.00\n\n\nNon-WEOG\n54.5\n38\n67.99\n\n\n\n[1] “\\(W = 103,461.00\\), \\(p = .486\\)”\n\nAge Mean\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n19.93\n16.97\n22.12\n\n\nWEIRD\n27.63\n25.41\n29.88\n\n\n\n[1] “t value = 9.65, df = 203.71, p-value = 0”\nAge SD:\n\nAge SD\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n3.72\n2.48\n4.61\n\n\nWEIRD\n7.12\n6.20\n8.08\n\n\n\n[1] “t value = 8.26, df = 151.22, p-value = 0”\nGender balance (country data collected):\n\nGender balance (Primary Country Data Collected)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 4.21, df = 139.18, p-value = 0”\nGender balance (based on first author country):\n\nGender balance (Primary Author Country)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 3.69, df = 109, p-value = 0”\nSolely musicians:\n\nMusical expertise across samples\n\n\nExpertise\n%\n\n\n\n\nmusicians\n30.5\n\n\nmusicians; non-musicians\n22.0\n\n\nnon-musicians\n10.1\n\n\nNot specified\n37.4\n\n\n\n[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]”\n\nSolely musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n381\nWEIRD\n0.3\n0.28\n0.33\n\n\nothers\n870\nWEIRD\n0.7\n0.67\n0.72\n\n\nmusicians\n48\nNon-WEIRD\n0.3\n0.23\n0.37\n\n\nothers\n112\nNon-WEIRD\n0.7\n0.63\n0.77\n\n\n\n[1] “Chi = 0.01 , p-value = 0.919540229885057”\nmusicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]”\n\nmusicians and non-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n662\nWEIRD\n0.53\n0.50\n0.56\n\n\nnon-musicians\n589\nWEIRD\n0.47\n0.44\n0.50\n\n\nmusicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\nnon-musicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\n\n[1] “Chi = 0.48 , p-value = 0.493753123438281”\nSolely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]”\n\nnon-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n1120\nWEIRD\n0.90\n0.88\n0.91\n\n\nnon-musicians\n131\nWEIRD\n0.10\n0.09\n0.12\n\n\nothers\n138\nNon-WEIRD\n0.86\n0.82\n0.92\n\n\nnon-musicians\n22\nNon-WEIRD\n0.14\n0.09\n0.19\n\n\n\n[1] “Chi = 1.58 , p-value = 0.222888555722139”\nUniversity sample: [1] “university n=510: 41% [38% to 44%]” [1] “university n=69: 43% [36% to 51%]”\n\nUniversity samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n741\nWEIRD\n0.59\n0.56\n0.62\n\n\nuniversity\n510\nWEIRD\n0.41\n0.38\n0.44\n\n\nothers\n91\nNon-WEIRD\n0.57\n0.49\n0.65\n\n\nuniversity\n69\nNon-WEIRD\n0.43\n0.36\n0.51\n\n\n\n[1] “Chi = 0.33 , p-value = 0.59720139930035”\nRecruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]”\n\nVolunteer samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n881\nWEIRD\n0.70\n0.68\n0.73\n\n\nvolunteer\n370\nWEIRD\n0.30\n0.27\n0.32\n\n\nothers\n106\nNon-WEIRD\n0.66\n0.59\n0.74\n\n\nvolunteer\n54\nNon-WEIRD\n0.34\n0.27\n0.42\n\n\n\n[1] “Chi = 0.99 , p-value = 0.320865528891456”\nExperimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]”\n\nExperimenter selected. music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n514\nWEIRD\n0.66\n0.62\n0.69\n\n\nexperimenter\n270\nWEIRD\n0.34\n0.31\n0.38\n\n\nother\n116\nNon-WEIRD\n0.66\n0.59\n0.73\n\n\nexperimenter\n59\nNon-WEIRD\n0.34\n0.27\n0.41\n\n\n\n[1] “Chi = 0.01 , p-value = 0.924726224159515”\nWestern music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]”\n\nWestern music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n212\nWEIRD\n0.27\n0.24\n0.30\n\n\nwestern\n572\nWEIRD\n0.73\n0.70\n0.76\n\n\nother\n71\nNon-WEIRD\n0.41\n0.34\n0.48\n\n\nwestern\n104\nNon-WEIRD\n0.59\n0.53\n0.67\n\n\n\n[1] “Chi = 11.95 , p-value = 0.000546663726214618”\n\n\n\n\nsource('scripts/report_numbers_for_MS.R')\n\n[1] \"Mean weighted age:\"\n[1] 27.06\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] \"61.1 %\"\n[1] \"First Author Country Prop:\"\n[1] \"US: 22 %\"\n[1] \"UK: 15 %\"\n[1] \"Aus: 11 %\"\n[1] \"Ger: 9 %\"\n[1] \"Can: 6 %\"\n[1] \"Fin: 5 %\"\n[1] \"WEIRD: 91 %\"\n[1] \"Prop of human studies:\"\n[1] \"94 %\"\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23 %\"\n[1] \"UK: 12 %\"\n[1] \"Aus: 8 %\"\n[1] \"Ger: 7 %\"\n[1] \"Can: 7 %\"\n[1] \"Fin: 3 %\"\n[1] \"online: 9 %\"",
     "crumbs": [
       "Data",
       "Summaries"
     ]
   },
   {
-    "objectID": "02_summary_results.html#table-and-manuscript-stats",
-    "href": "02_summary_results.html#table-and-manuscript-stats",
-    "title": "WEIRD",
-    "section": "Table and manuscript stats",
-    "text": "Table and manuscript stats\n\nload(file='data/WEIRD_data.Rdata')\n\nsource('scripts/table1.R')                 # creates numbers for Table 1\n\n\nAttaching package: 'Hmisc'\n\n\nThe following objects are masked from 'package:dplyr':\n\n    src, summarize\n\n\nThe following objects are masked from 'package:base':\n\n    format.pval, units\n\n\n\nAttaching package: 'DescTools'\n\n\nThe following objects are masked from 'package:Hmisc':\n\n    %nin%, Label, Mean, Quantile\n\n\nRegistered S3 method overwritten by 'gdata':\n  method         from     \n  reorder.factor DescTools\n\n\n\n Sample size:\n\nNon-WEOG     WEOG \n     160     1251 \n# A tibble: 2 × 5\n  sample_country_data_collected_WEOG data                 median lwr.ci upr.ci\n  &lt;chr&gt;                              &lt;list&gt;                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;\n1 WEOG                               &lt;tibble [1,251 × 1]&gt;   48     42     52  \n2 Non-WEOG                           &lt;tibble [160 × 1]&gt;     54.5   37.5   68.5\n[1] \"p-value: 0.486040728075409\"\n\n Age Mean:\n  wtd.avg CI.LL CI.UL\n1   19.93 17.00 22.06\n2   27.63 25.26 29.90\n[1] \"p-value: 0\"\n\n Age SD:\n  wtd.avg CI.LL CI.UL\n1    3.72  2.57  4.60\n2    7.12  6.18  8.18\n[1] \"p-value: 0\"\n\n Gender balance:\n  wtd.avg CI.LL CI.UL\n1    0.54  0.49  0.56\n2    0.59  0.57  0.61\n[1] \"p-value: 0\"\n  wtd.avg CI.LL CI.UL\n1    0.54  0.49  0.57\n2    0.59  0.57  0.61\n[1] \"p-value: 0\"\n\n Solely musicians:\n[1] \"overall musical expertise across samples\"\n\n               musicians musicians; non-musicians            non-musicians \n                    30.5                     22.0                     10.1 \n           Not specified \n                    37.4 \n[1] \"musicians n=381: 30% [28% to 33%]\"\n[1] \"musicians n=48: 30% [23% to 37%]\"\n[1] \"p-value: 0.92\"\n\n musicians and non-musicians:\n[1] \"musicians n=662: 53% [50% to 56%]\"\n[1] \"musicians n=80: 50% [42% to 58%]\"\n[1] \"p-value: 0.494\"\n\n Solely Non-musicians:\n[1] \"non-musicians n=131: 10% [9% to 12%]\"\n[1] \"non-musicians n=22: 14% [9% to 19%]\"\n[1] \"p-value: 0.223\"\n\n University sample:\n[1] \"NA n=616: 49% [46% to 52%]\"\n[1] \"NA n=92: 57% [50% to 66%]\"\n[1] \"p-value: 0.05\"\n\n Recruitment volunteer:\n[1] \"volunteer n=370: 30% [27% to 32%]\"\n[1] \"volunteer n=54: 34% [27% to 42%]\"\n[1] \"p-value: 0.321\"\n\n Experimenter Created Music:\n[1] \"experimenter n=270: 34% [31% to 38%]\"\n[1] \"experimenter n=59: 34% [27% to 41%]\"\n[1] \"p-value: 0.925\"\n\n Western music:\n[1] \"western n=572: 73% [70% to 76%]\"\n[1] \"western n=104: 59% [53% to 67%]\"\n[1] \"p-value: 0.001\"\n\n Table ready!\n\nsource('scripts/report_numbers_for_MS.R')  # create numbers for the ms\n\n[1] \"Mean weighted age:\"\n[1] 27.05683\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] 0.610955\n[1] \"First Author Country Prop:\"\n[1] \"US: 22\"\n[1] \"UK: 15\"\n[1] \"Aus: 11\"\n[1] \"Ger: 9\"\n[1] \"Can: 6\"\n[1] \"Fin: 5\"\n[1] \"WEIRD: 91\"\n[1] \"Prop of human studies:\"\n[1] 94\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23\"\n[1] \"UK: 12\"\n[1] \"Aus: 8\"\n[1] \"Ger: 7\"\n[1] \"Can: 7\"\n[1] \"Fin: 3\"\n[1] \"online: 9\"",
-    "crumbs": [
-      "Data",
-      "Table and manuscript stats"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#save-if-necessary",
-    "href": "01_data_description.html#save-if-necessary",
-    "title": "Data pre-processing",
+    "objectID": "02_summary_results.html#descriptives-and-weird",
+    "href": "02_summary_results.html#descriptives-and-weird",
+    "title": "Summaries",
     "section": "",
-    "text": "needs_saving &lt;- FALSE\nif(needs_saving==TRUE){\n  save(d,df,D,DF,file='data/WEIRD_data.Rdata')\n}",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "02_summary_results.html#summaries",
-    "href": "02_summary_results.html#summaries",
-    "title": "WEIRD",
-    "section": "",
-    "text": "── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\n\nload(file='data/WEIRD_data.Rdata')\n\nsource('scripts/table1.R')                 # creates numbers for Table 1\n\n\nAttaching package: 'Hmisc'\n\n\nThe following objects are masked from 'package:dplyr':\n\n    src, summarize\n\n\nThe following objects are masked from 'package:base':\n\n    format.pval, units\n\n\n\nAttaching package: 'DescTools'\n\n\nThe following objects are masked from 'package:Hmisc':\n\n    %nin%, Label, Mean, Quantile\n\n\nRegistered S3 method overwritten by 'gdata':\n  method         from     \n  reorder.factor DescTools\n\n\n\n Sample size:\n\nNon-WEOG     WEOG \n     160     1251 \n# A tibble: 2 × 5\n  sample_country_data_collected_WEOG data                 median lwr.ci upr.ci\n  &lt;chr&gt;                              &lt;list&gt;                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;\n1 WEOG                               &lt;tibble [1,251 × 1]&gt;   48     42     52  \n2 Non-WEOG                           &lt;tibble [160 × 1]&gt;     54.5   38.5   68.5\n[1] \"p-value: 0.486040728075409\"\n\n Age Mean:\n  wtd.avg CI.LL CI.UL\n1   19.93 16.71 22.23\n2   27.63 25.35 29.99\n[1] \"p-value: 0\"\n\n Age SD:\n  wtd.avg CI.LL CI.UL\n1    3.72  2.42  4.61\n2    7.12  6.26  8.06\n[1] \"p-value: 0\"\n\n Gender balance:\n  wtd.avg CI.LL CI.UL\n1    0.54  0.50  0.56\n2    0.59  0.57  0.61\n[1] \"p-value: 0\"\n  wtd.avg CI.LL CI.UL\n1    0.54  0.49  0.56\n2    0.59  0.57  0.61\n[1] \"p-value: 0\"\n\n Solely musicians:\n[1] \"overall musical expertise across samples\"\n\n               musicians musicians; non-musicians            non-musicians \n                    30.5                     22.0                     10.1 \n           Not specified \n                    37.4 \n[1] \"musicians n=381: 30% [28% to 33%]\"\n[1] \"musicians n=48: 30% [23% to 37%]\"\n[1] \"p-value: 0.92\"\n\n musicians and non-musicians:\n[1] \"musicians n=662: 53% [50% to 56%]\"\n[1] \"musicians n=80: 50% [42% to 58%]\"\n[1] \"p-value: 0.494\"\n\n Solely Non-musicians:\n[1] \"non-musicians n=131: 10% [9% to 12%]\"\n[1] \"non-musicians n=22: 14% [9% to 19%]\"\n[1] \"p-value: 0.223\"\n\n University sample:\n[1] \"NA n=616: 49% [46% to 52%]\"\n[1] \"NA n=92: 57% [50% to 66%]\"\n[1] \"p-value: 0.05\"\n\n Recruitment volunteer:\n[1] \"volunteer n=370: 30% [27% to 32%]\"\n[1] \"volunteer n=54: 34% [27% to 42%]\"\n[1] \"p-value: 0.321\"\n\n Experimenter Created Music:\n[1] \"experimenter n=270: 34% [31% to 38%]\"\n[1] \"experimenter n=59: 34% [27% to 41%]\"\n[1] \"p-value: 0.925\"\n\n Western music:\n[1] \"western n=572: 73% [70% to 76%]\"\n[1] \"western n=104: 59% [53% to 67%]\"\n[1] \"p-value: 0.001\"\n\n Table ready!\n\nsource('scripts/report_numbers_for_MS.R')  # create numbers for the ms\n\n[1] \"Mean weighted age:\"\n[1] 27.05683\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] 0.610955\n[1] \"First Author Country Prop:\"\n[1] \"US: 22\"\n[1] \"UK: 15\"\n[1] \"Aus: 11\"\n[1] \"Ger: 9\"\n[1] \"Can: 6\"\n[1] \"Fin: 5\"\n[1] \"WEIRD: 91\"\n[1] \"Prop of human studies:\"\n[1] 94\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23\"\n[1] \"UK: 12\"\n[1] \"Aus: 8\"\n[1] \"Ger: 7\"\n[1] \"Can: 7\"\n[1] \"Fin: 3\"\n[1] \"online: 9\"",
+    "text": "Compare descriptives across WEIRD and non-WEIRD countries across studies and samples (Table 1 in the manuscript).\nsource('scripts/table1.R')\n\nSample Size\n\n\nsample_country_data_collected_WEOG\nmedian\nlwr.ci\nupr.ci\n\n\n\n\nWEOG\n48.0\n43\n52.00\n\n\nNon-WEOG\n54.5\n38\n67.99\n\n\n\n[1] “\\(W = 103,461.00\\), \\(p = .486\\)”\n\nAge Mean\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n19.93\n16.97\n22.12\n\n\nWEIRD\n27.63\n25.41\n29.88\n\n\n\n[1] “t value = 9.65, df = 203.71, p-value = 0”\nAge SD:\n\nAge SD\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n3.72\n2.48\n4.61\n\n\nWEIRD\n7.12\n6.20\n8.08\n\n\n\n[1] “t value = 8.26, df = 151.22, p-value = 0”\nGender balance (country data collected):\n\nGender balance (Primary Country Data Collected)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 4.21, df = 139.18, p-value = 0”\nGender balance (based on first author country):\n\nGender balance (Primary Author Country)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 3.69, df = 109, p-value = 0”\nSolely musicians:\n\nMusical expertise across samples\n\n\nExpertise\n%\n\n\n\n\nmusicians\n30.5\n\n\nmusicians; non-musicians\n22.0\n\n\nnon-musicians\n10.1\n\n\nNot specified\n37.4\n\n\n\n[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]”\n\nSolely musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n381\nWEIRD\n0.3\n0.28\n0.33\n\n\nothers\n870\nWEIRD\n0.7\n0.67\n0.72\n\n\nmusicians\n48\nNon-WEIRD\n0.3\n0.23\n0.37\n\n\nothers\n112\nNon-WEIRD\n0.7\n0.63\n0.77\n\n\n\n[1] “Chi = 0.01 , p-value = 0.919540229885057”\nmusicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]”\n\nmusicians and non-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n662\nWEIRD\n0.53\n0.50\n0.56\n\n\nnon-musicians\n589\nWEIRD\n0.47\n0.44\n0.50\n\n\nmusicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\nnon-musicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\n\n[1] “Chi = 0.48 , p-value = 0.493753123438281”\nSolely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]”\n\nnon-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n1120\nWEIRD\n0.90\n0.88\n0.91\n\n\nnon-musicians\n131\nWEIRD\n0.10\n0.09\n0.12\n\n\nothers\n138\nNon-WEIRD\n0.86\n0.82\n0.92\n\n\nnon-musicians\n22\nNon-WEIRD\n0.14\n0.09\n0.19\n\n\n\n[1] “Chi = 1.58 , p-value = 0.222888555722139”\nUniversity sample: [1] “university n=510: 41% [38% to 44%]” [1] “university n=69: 43% [36% to 51%]”\n\nUniversity samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n741\nWEIRD\n0.59\n0.56\n0.62\n\n\nuniversity\n510\nWEIRD\n0.41\n0.38\n0.44\n\n\nothers\n91\nNon-WEIRD\n0.57\n0.49\n0.65\n\n\nuniversity\n69\nNon-WEIRD\n0.43\n0.36\n0.51\n\n\n\n[1] “Chi = 0.33 , p-value = 0.59720139930035”\nRecruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]”\n\nVolunteer samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n881\nWEIRD\n0.70\n0.68\n0.73\n\n\nvolunteer\n370\nWEIRD\n0.30\n0.27\n0.32\n\n\nothers\n106\nNon-WEIRD\n0.66\n0.59\n0.74\n\n\nvolunteer\n54\nNon-WEIRD\n0.34\n0.27\n0.42\n\n\n\n[1] “Chi = 0.99 , p-value = 0.320865528891456”\nExperimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]”\n\nExperimenter selected. music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n514\nWEIRD\n0.66\n0.62\n0.69\n\n\nexperimenter\n270\nWEIRD\n0.34\n0.31\n0.38\n\n\nother\n116\nNon-WEIRD\n0.66\n0.59\n0.73\n\n\nexperimenter\n59\nNon-WEIRD\n0.34\n0.27\n0.41\n\n\n\n[1] “Chi = 0.01 , p-value = 0.924726224159515”\nWestern music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]”\n\nWestern music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n212\nWEIRD\n0.27\n0.24\n0.30\n\n\nwestern\n572\nWEIRD\n0.73\n0.70\n0.76\n\n\nother\n71\nNon-WEIRD\n0.41\n0.34\n0.48\n\n\nwestern\n104\nNon-WEIRD\n0.59\n0.53\n0.67\n\n\n\n[1] “Chi = 11.95 , p-value = 0.000546663726214618”",
     "crumbs": [
       "Data",
       "Summaries"
     ]
   },
   {
-    "objectID": "03_maps.html",
-    "href": "03_maps.html",
-    "title": "WEIRD",
+    "objectID": "02_summary_results.html#produce-numbers-reported-in-the-manuscript",
+    "href": "02_summary_results.html#produce-numbers-reported-in-the-manuscript",
+    "title": "Summaries",
     "section": "",
-    "text": "Produce two global maps together with some other information about the sample.\n\nload(file='data/WEIRD_data.Rdata')\n\nsource('scripts/preprocess_for_maps.R')    # prepare country information  \n\nLinking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE\n\n\nWarning: Some values were not matched unambiguously: ALD, CYN, KOS, PSX, SAH, SDS, SOL\n\nsource('scripts/WEIRD_map.R')              # Extra plot\n\n`summarise()` has grouped output by 'CountryDataCollected'. You can override\nusing the `.groups` argument.\n\n\nWarning: Some values were not matched unambiguously: Europe, NA, online\n\n\n\n\n\n\n\n\nsource('scripts/visualise_on_map.R')       # Figure 1\n\nWarning: Some values were not matched unambiguously: Europe, NA, online\n\n\nAdding missing grouping variables: `paper_id`",
+    "text": "source('scripts/report_numbers_for_MS.R')\n\n[1] \"Mean weighted age:\"\n[1] 27.06\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] \"61.1 %\"\n[1] \"First Author Country Prop:\"\n[1] \"US: 22 %\"\n[1] \"UK: 15 %\"\n[1] \"Aus: 11 %\"\n[1] \"Ger: 9 %\"\n[1] \"Can: 6 %\"\n[1] \"Fin: 5 %\"\n[1] \"WEIRD: 91 %\"\n[1] \"Prop of human studies:\"\n[1] \"94 %\"\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23 %\"\n[1] \"UK: 12 %\"\n[1] \"Aus: 8 %\"\n[1] \"Ger: 7 %\"\n[1] \"Can: 7 %\"\n[1] \"Fin: 3 %\"\n[1] \"online: 9 %\"",
     "crumbs": [
-      "Visualisations",
-      "Maps"
-    ]
-  },
-  {
-    "objectID": "03_maps.html#maps",
-    "href": "03_maps.html#maps",
-    "title": "WEIRD",
-    "section": "",
-    "text": "Produce two global maps together with some other information about the sample.\n\nload(file='data/WEIRD_data.Rdata')\n\nsource('scripts/preprocess_for_maps.R')    # prepare country information  \n\nLinking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE\n\n\nWarning: Some values were not matched unambiguously: ALD, CYN, KOS, PSX, SAH, SDS, SOL\n\nsource('scripts/WEIRD_map.R')              # Extra plot\n\n`summarise()` has grouped output by 'CountryDataCollected'. You can override\nusing the `.groups` argument.\n\n\nWarning: Some values were not matched unambiguously: Europe, NA, online\n\n\n\n\n\n\n\n\nsource('scripts/visualise_on_map.R')       # Figure 1\n\nWarning: Some values were not matched unambiguously: Europe, NA, online\n\n\nAdding missing grouping variables: `paper_id`",
-    "crumbs": [
-      "Visualisations",
-      "Maps"
+      "Data",
+      "Summaries"
     ]
   },
   {
@@ -161,138 +143,6 @@
     "crumbs": [
       "Visualisations",
       "Trends"
-    ]
-  },
-  {
-    "objectID": "02_summary_results.html#create-table-comparing-descriptives-across-weird-and-non-weird",
-    "href": "02_summary_results.html#create-table-comparing-descriptives-across-weird-and-non-weird",
-    "title": "Summaries",
-    "section": "",
-    "text": "source('scripts/table1.R')                 # creates numbers for Table 1\n\nSample Size\n\n\nsample_country_data_collected_WEOG\nmedian\nlwr.ci\nupr.ci\n\n\n\n\nWEOG\n48.0\n42\n52\n\n\nNon-WEOG\n54.5\n38\n67\n\n\n\nWilcoxon rank sum test with continuity correction\ndata: sample_size by sample_country_data_collected_WEOG W = 103461, p-value = 0.486 alternative hypothesis: true location shift is not equal to 0\n\nAge Mean\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n19.93\n16.83\n21.95\n\n\nWEIRD\n27.63\n25.29\n29.92\n\n\n\n$test [1] “Two Sample Weighted T-Test (Welch)”\n$coefficients t.value df p.value 9.41642 203.70582 0.00000\n$additional Difference Mean.x Mean.y Std. Err 7.6943771 27.6278126 19.9334356 0.8171234\n[1] “p-value: 0”\nAge SD: wtd.avg CI.LL CI.UL 1 3.72 2.58 4.62 2 7.12 6.21 8.11 [1] “p-value: 0”\nGender balance (country data collected): wtd.avg CI.LL CI.UL 1 0.54 0.49 0.56 2 0.59 0.57 0.61 [1] “p-value: 0”\nGender balance (based on first author country): wtd.avg CI.LL CI.UL 1 0.54 0.49 0.56 2 0.59 0.57 0.60 [1] “p-value: 0”\nSolely musicians: [1] “overall musical expertise across samples”\n           musicians musicians; non-musicians            non-musicians \n                30.5                     22.0                     10.1 \n       Not specified \n                37.4 \n[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]” [1] “p-value: 0.92”\nmusicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]” [1] “p-value: 0.494”\nSolely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]” [1] “p-value: 0.223”\nUniversity sample: [1] “NA n=616: 49% [46% to 52%]” [1] “NA n=92: 57% [50% to 66%]” [1] “p-value: 0.05”\nRecruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]” [1] “p-value: 0.321”\nExperimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]” [1] “p-value: 0.925”\nWestern music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]” [1] “p-value: 0.001”",
-    "crumbs": [
-      "Data",
-      "Summaries"
-    ]
-  },
-  {
-    "objectID": "02_summary_results.html#produce-numbers-given-in-the-manuscript",
-    "href": "02_summary_results.html#produce-numbers-given-in-the-manuscript",
-    "title": "Summaries",
-    "section": "",
-    "text": "source('scripts/report_numbers_for_MS.R')  # create numbers for the ms\n\n[1] \"Mean weighted age:\"\n[1] 27.05683\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] 0.610955\n[1] \"First Author Country Prop:\"\n[1] \"US: 22\"\n[1] \"UK: 15\"\n[1] \"Aus: 11\"\n[1] \"Ger: 9\"\n[1] \"Can: 6\"\n[1] \"Fin: 5\"\n[1] \"WEIRD: 91\"\n[1] \"Prop of human studies:\"\n[1] 94\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23\"\n[1] \"UK: 12\"\n[1] \"Aus: 8\"\n[1] \"Ger: 7\"\n[1] \"Can: 7\"\n[1] \"Fin: 3\"\n[1] \"online: 9\"",
-    "crumbs": [
-      "Data",
-      "Summaries"
-    ]
-  },
-  {
-    "objectID": "02_summary_results.html#create-table",
-    "href": "02_summary_results.html#create-table",
-    "title": "Summaries",
-    "section": "",
-    "text": "Compare descriptives across WEIRD and non-WEIRD countries across studies and samples.\nsource('scripts/table1.R')                 # creates numbers for Table 1\n\nSample Size\n\n\nsample_country_data_collected_WEOG\nmedian\nlwr.ci\nupr.ci\n\n\n\n\nWEOG\n48.0\n42\n52\n\n\nNon-WEOG\n54.5\n38\n67\n\n\n\n[1] “\\(W = 103,461.00\\), \\(p = .486\\)”\n\nAge Mean\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n19.93\n16.84\n22.13\n\n\nWEIRD\n27.63\n25.27\n29.87\n\n\n\n[1] “t value = 9.31, df = 203.71, p-value = 0”\nAge SD:\n\nAge SD\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n3.72\n2.61\n4.58\n\n\nWEIRD\n7.12\n6.25\n8.06\n\n\n\n[1] “t value = 8.19, df = 151.22, p-value = 0”\nGender balance (country data collected): wtd.avg CI.LL CI.UL 1 0.54 0.49 0.56 2 0.59 0.57 0.61 [1] “p-value: 0”\nGender balance (based on first author country): wtd.avg CI.LL CI.UL 1 0.54 0.49 0.56 2 0.59 0.57 0.60 [1] “p-value: 0.002”\nSolely musicians: [1] “overall musical expertise across samples”\n           musicians musicians; non-musicians            non-musicians \n                30.5                     22.0                     10.1 \n       Not specified \n                37.4 \n[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]” [1] “p-value: 0.92”\nmusicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]” [1] “p-value: 0.494”\nSolely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]” [1] “p-value: 0.223”\nUniversity sample: [1] “NA n=616: 49% [46% to 52%]” [1] “NA n=92: 57% [50% to 66%]” [1] “p-value: 0.05”\nRecruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]” [1] “p-value: 0.321”\nExperimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]” [1] “p-value: 0.925”\nWestern music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]” [1] “p-value: 0.001”",
-    "crumbs": [
-      "Data",
-      "Summaries"
-    ]
-  },
-  {
-    "objectID": "02_summary_results.html#descriptives-and-weird",
-    "href": "02_summary_results.html#descriptives-and-weird",
-    "title": "Summaries",
-    "section": "",
-    "text": "Compare descriptives across WEIRD and non-WEIRD countries across studies and samples (Table 1 in the manuscript).\nsource('scripts/table1.R')\n\nSample Size\n\n\nsample_country_data_collected_WEOG\nmedian\nlwr.ci\nupr.ci\n\n\n\n\nWEOG\n48.0\n42\n52\n\n\nNon-WEOG\n54.5\n38\n68\n\n\n\n[1] “\\(W = 103,461.00\\), \\(p = .486\\)”\n\nAge Mean\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n19.93\n16.79\n21.93\n\n\nWEIRD\n27.63\n25.38\n30.02\n\n\n\n[1] “t value = 9.59, df = 203.71, p-value = 0”\nAge SD:\n\nAge SD\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n3.72\n2.47\n4.63\n\n\nWEIRD\n7.12\n6.18\n8.07\n\n\n\n[1] “t value = 8.31, df = 151.22, p-value = 0”\nGender balance (country data collected):\n\nGender balance (Primary Country Data Collected)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 4.09, df = 139.18, p-value = 0”\nGender balance (based on first author country):\n\nGender balance (Primary Author Country)\n\n\n\nwtd.avg\nCI.LL\nCI.UL\n\n\n\n\nNon-WEIRD\n0.54\n0.49\n0.56\n\n\nWEIRD\n0.59\n0.57\n0.61\n\n\n\n[1] “t value = 3.67, df = 109, p-value = 0.002”\nSolely musicians:\n\nMusical expertise across samples\n\n\nExpertise\n%\n\n\n\n\nmusicians\n30.5\n\n\nmusicians; non-musicians\n22.0\n\n\nnon-musicians\n10.1\n\n\nNot specified\n37.4\n\n\n\n[1] “musicians n=381: 30% [28% to 33%]” [1] “musicians n=48: 30% [23% to 37%]”\n\nSolely musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n381\nWEIRD\n0.3\n0.28\n0.33\n\n\nothers\n870\nWEIRD\n0.7\n0.67\n0.72\n\n\nmusicians\n48\nNon-WEIRD\n0.3\n0.23\n0.37\n\n\nothers\n112\nNon-WEIRD\n0.7\n0.63\n0.77\n\n\n\n[1] “Chi = 0.01 , p-value = 0.919540229885057”\nmusicians and non-musicians: [1] “musicians n=662: 53% [50% to 56%]” [1] “musicians n=80: 50% [42% to 58%]”\n\nmusicians and non-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nmusicians\n662\nWEIRD\n0.53\n0.50\n0.56\n\n\nnon-musicians\n589\nWEIRD\n0.47\n0.44\n0.50\n\n\nmusicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\nnon-musicians\n80\nNon-WEIRD\n0.50\n0.42\n0.58\n\n\n\n[1] “Chi = 0.48 , p-value = 0.493753123438281”\nSolely Non-musicians: [1] “non-musicians n=131: 10% [9% to 12%]” [1] “non-musicians n=22: 14% [9% to 19%]”\n\nnon-musicians\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n1120\nWEIRD\n0.90\n0.88\n0.91\n\n\nnon-musicians\n131\nWEIRD\n0.10\n0.09\n0.12\n\n\nothers\n138\nNon-WEIRD\n0.86\n0.82\n0.92\n\n\nnon-musicians\n22\nNon-WEIRD\n0.14\n0.09\n0.19\n\n\n\n[1] “Chi = 1.58 , p-value = 0.222888555722139”\nUniversity sample: [1] “NA n=616: 49% [46% to 52%]” [1] “NA n=92: 57% [50% to 66%]”\n\nUniversity samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nNA\n635\nWEIRD\n0.51\n0.48\n0.54\n\n\nNA\n616\nWEIRD\n0.49\n0.46\n0.52\n\n\nNA\n68\nNon-WEIRD\n0.42\n0.35\n0.51\n\n\nNA\n92\nNon-WEIRD\n0.58\n0.50\n0.66\n\n\n\n[1] “Chi = 3.87 , p-value = 0.0499750124937531”\nRecruitment volunteer: [1] “volunteer n=370: 30% [27% to 32%]” [1] “volunteer n=54: 34% [27% to 42%]”\n\nVolunteer samples\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nothers\n881\nWEIRD\n0.70\n0.68\n0.73\n\n\nvolunteer\n370\nWEIRD\n0.30\n0.27\n0.32\n\n\nothers\n106\nNon-WEIRD\n0.66\n0.59\n0.74\n\n\nvolunteer\n54\nNon-WEIRD\n0.34\n0.27\n0.42\n\n\n\n[1] “Chi = 0.99 , p-value = 0.320865528891456”\nExperimenter Created Music: [1] “experimenter n=270: 34% [31% to 38%]” [1] “experimenter n=59: 34% [27% to 41%]”\n\nExperimenter selected. music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n514\nWEIRD\n0.66\n0.62\n0.69\n\n\nexperimenter\n270\nWEIRD\n0.34\n0.31\n0.38\n\n\nother\n116\nNon-WEIRD\n0.66\n0.59\n0.73\n\n\nexperimenter\n59\nNon-WEIRD\n0.34\n0.27\n0.41\n\n\n\n[1] “Chi = 0.01 , p-value = 0.924726224159515”\nWestern music: [1] “western n=572: 73% [70% to 76%]” [1] “western n=104: 59% [53% to 67%]”\n\nWestern music\n\n\nvar\nn\nlabel\nprop\nlwr.ci\nupr.ci\n\n\n\n\nother\n212\nWEIRD\n0.27\n0.24\n0.30\n\n\nwestern\n572\nWEIRD\n0.73\n0.70\n0.76\n\n\nother\n71\nNon-WEIRD\n0.41\n0.34\n0.48\n\n\nwestern\n104\nNon-WEIRD\n0.59\n0.53\n0.67\n\n\n\n[1] “Chi = 11.95 , p-value = 0.000546663726214618”",
-    "crumbs": [
-      "Data",
-      "Summaries"
-    ]
-  },
-  {
-    "objectID": "05_keywords.html",
-    "href": "05_keywords.html",
-    "title": "WEIRD",
-    "section": "",
-    "text": "Create Figure 3 showing 6 rankings of keywords across key variables.\n\nsource('scripts/keyword_analysis_multiple_ver2.R')",
-    "crumbs": [
-      "Visualisations",
-      "Keywords"
-    ]
-  },
-  {
-    "objectID": "05_keywords.html#keywords",
-    "href": "05_keywords.html#keywords",
-    "title": "WEIRD",
-    "section": "",
-    "text": "Create Figure 3 showing 6 rankings of keywords across key variables.\n\nsource('scripts/keyword_analysis_multiple_ver2.R')",
-    "crumbs": [
-      "Visualisations",
-      "Keywords"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#descriptives-and-weird",
-    "href": "01_data_description.html#descriptives-and-weird",
-    "title": "Data pre-processing",
-    "section": "Descriptives and WEIRD",
-    "text": "Descriptives and WEIRD\nCompare descriptives across WEIRD and non-WEIRD countries across studies and samples.\n#| eval: true\n#| echo: true\n#| warning: false\n#| error: false\n#| output: asis\nsource('scripts/table1.R')",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#produce-numbers-given-in-the-manuscript",
-    "href": "01_data_description.html#produce-numbers-given-in-the-manuscript",
-    "title": "Data pre-processing",
-    "section": "Produce numbers given in the manuscript",
-    "text": "Produce numbers given in the manuscript\n#| eval: true\n#| echo: true\n#| warning: false\n#| error: false\nsource('scripts/report_numbers_for_MS.R')  # create numbers for the ms",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#maps",
-    "href": "01_data_description.html#maps",
-    "title": "Data pre-processing",
-    "section": "Maps",
-    "text": "Maps\n#| eval: true\n#| echo: false\n#| warning: false\n#| output: false\nlibrary(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\nlibrary(cowplot)\nlibrary(ggthemes)\nlibrary(viridis)\nlibrary(countrycode)\n#| eval: true\n#| echo: true\n#| warning: false\n#| output: true\nload(file='data/WEIRD_data.Rdata')\n\nsource('scripts/preprocess_for_maps.R')    # prepare country information  \nsource('scripts/WEIRD_map.R')              # Extra plot\nsource('scripts/visualise_on_map.R')       # Figure 1 (4 sub-plots)",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#trends",
-    "href": "01_data_description.html#trends",
-    "title": "Data pre-processing",
-    "section": "Trends",
-    "text": "Trends\n#| eval: true\n#| echo: false\n#| warning: false\n#| output: false\nlibrary(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\nload(file='data/WEIRD_data.Rdata')\n#| eval: true\n#| echo: true\n#| warning: false\nsource('scripts/trends.R') # Figure 2",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "01_data_description.html#keywords",
-    "href": "01_data_description.html#keywords",
-    "title": "Data pre-processing",
-    "section": "Keywords",
-    "text": "Keywords\n#| eval: true\n#| echo: false\n#| warning: false\n#| output: false\nlibrary(tidyverse)\nlibrary(stringr)\nlibrary(ggplot2)\nload(file='data/WEIRD_data.Rdata')\n#| eval: true\n#| echo: true\n#| warning: false\n#source('scripts/keyword_analysis.R')            # creates figure  \nsource('scripts/keyword_analysis_multiple_ver2.R')   # X",
-    "crumbs": [
-      "Data",
-      "Data pre-processing"
-    ]
-  },
-  {
-    "objectID": "02_summary_results.html#produce-numbers-reported-in-the-manuscript",
-    "href": "02_summary_results.html#produce-numbers-reported-in-the-manuscript",
-    "title": "Summaries",
-    "section": "",
-    "text": "source('scripts/report_numbers_for_MS.R')\n\n[1] \"Mean weighted age:\"\n[1] 27.05683\n[1] 0.7624021\n[1] \"gender % female prop. (weighted):\"\n[1] 0.610955\n[1] \"First Author Country Prop:\"\n[1] \"US: 22\"\n[1] \"UK: 15\"\n[1] \"Aus: 11\"\n[1] \"Ger: 9\"\n[1] \"Can: 6\"\n[1] \"Fin: 5\"\n[1] \"WEIRD: 91\"\n[1] \"Prop of human studies:\"\n[1] 94\n[1] \"Country Data Collected Prop:\"\n[1] \"US: 23\"\n[1] \"UK: 12\"\n[1] \"Aus: 8\"\n[1] \"Ger: 7\"\n[1] \"Can: 7\"\n[1] \"Fin: 3\"\n[1] \"online: 9\"",
-    "crumbs": [
-      "Data",
-      "Summaries"
     ]
   }
 ]

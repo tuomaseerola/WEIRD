@@ -23,7 +23,7 @@ colnames(country_freq)<-c('CountryName','Freq')
 # Cite this
 # Arel-Bundock, Vincent, Nils Enevoldsen, and CJ Yetman, (2018). countrycode: An R package to convert country names and country codes. Journal of Open Source Software, 3(28), 848, https://doi.org/10.21105/joss.00848
 
-country_freq$cown <- countrycode(country_freq$CountryName,"country.name",'ecb')
+country_freq$cown <- countrycode(country_freq$CountryName,"country.name",'ecb',warn = FALSE)
 # Merge WEIRD and MAP data
 map1 <- merge(map, country_freq, by.x = "COWcode", by.y = "cown", all = TRUE)
 map1$formal_en[is.na(map1$COWcode)]
@@ -32,7 +32,8 @@ table(map1$COWcode)
 #map1 <- tidyr::drop_na(map1,COWcode)
 dim(map1)
 
-
+library(ggthemes)
+library(viridis)
 
 # Projection
 target_crs <- "+proj=eqearth +wktext"
@@ -75,9 +76,9 @@ labs(fill='Frequency')  +
   theme(plot.title = element_text(hjust = 0.5))
 g1
 
-if(saveplots==TRUE){
-  ggsave(filename = 'articles_country_freq.pdf',g1,device = 'pdf',height = 6,width = 9)
-}
+#if(saveplots==TRUE){
+#  ggsave(filename = 'articles_country_freq.pdf',g1,device = 'pdf',height = 6,width = 9)
+#}
 
 #### 2 COUNTRY DATA COLLECTED Aggregated Sample sizes--------
 nrow(d)
@@ -117,9 +118,9 @@ g2 <- ggplot(data = map2_eqea) +
   theme(plot.title = element_text(hjust = 0.5))
 g2
 
-if(saveplots==TRUE){
-  ggsave(filename = 'pooled_N_country_freq.pdf',g2,device = 'pdf',height = 6,width = 9)
-}
+#if(saveplots==TRUE){
+#  ggsave(filename = 'pooled_N_country_freq.pdf',g2,device = 'pdf',height = 6,width = 9)
+#}
 
 #### 3. Articles per Year -------
 DD <- dplyr::filter(d,study_id=='study1') # 1360 articles (1360 correct!)
@@ -133,7 +134,7 @@ colnames(t)<-c('Year','Count')
 g3<-ggplot(t,aes(x=Year,y=Count))+
   geom_col(fill='grey85',colour='black')+
   scale_y_continuous(limits = c(0,200),expand = c(0.01,0.01))+
-  ggtitle('Number of articles by year')+
+  ggtitle('Number of Articles by Year')+
   theme_bw(base_size = 13,base_family = 'Times')+
   theme(plot.title = element_text(hjust = 0.5))
 g3
@@ -142,7 +143,7 @@ g3
 max(as.numeric(d$SampleSize),na.rm=TRUE)
 #4096*14
 #hist(log(d$SampleSize))
-tmp<-dplyr::select(d,SampleSize)
+tmp<-dplyr::select(ungroup(d),SampleSize)
 tmp<-drop_na(tmp)
 Md<-median(tmp$SampleSize)
 Md
@@ -153,7 +154,7 @@ g4a<-ggplot(tmp,aes(x=as.numeric(SampleSize)))+
   scale_y_continuous(limits = c(0,120),expand = c(0.01,0.01))+
   xlab('Sample Size (N) on log scale')+
   geom_vline(xintercept = Md,linetype='dashed')+
-  annotate("text", x=Md+4,y=110,label='Median (50)',hjust=0)+
+  annotate("text", x=Md+4,y=110,label='Median (50)',hjust=0,family = 'Times')+
   ylab('Count')+
   ggtitle('Sample size')+
   theme_bw(base_size = 14,base_family = 'Times')+
@@ -175,14 +176,13 @@ g4b
 ind<-as.numeric(D$SampleSize)>1000
 sum(ind==TRUE,na.rm = T)
 
-#library(cowplot)
+library(cowplot)
 G <- cowplot::plot_grid(g1,g3,g2,g4a,rel_widths = c(1.45,1),rel_heights = c(1,1),labels = "AUTO",label_fontfamily = 'Times')
 print(G)
 
 if(saveplots==TRUE){
   ggsave(filename = 'figure1.pdf',device = 'pdf',G,width = 13,height = 8)
 }
-
 
 #### Clean --------------
 rm(list = ls()[grep("^map", ls())])

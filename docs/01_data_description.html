@@ -230,61 +230,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The manually annotated data titled <code>data/WEIRD coding final corr names.csv</code> was cleaned through process captured in <code>weird data cleaning.R</code> script.</p>
-<p>Here we take this manually annotated and cleaned data, <code>data/WEIRD part cleaned Feb24.csv</code>.</p>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/WEIRD part cleaned Feb24.csv'</span>,<span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<p>Here we take this manually annotated and cleaned data, <code>data/WEIRD_06_05_2024.csv</code>.</p>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/WEIRD_06_05_2024.csv'</span>,<span class="at">header =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(d[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="table">
 <colgroup>
-<col style="width: 61%">
-<col style="width: 2%">
-<col style="width: 10%">
-<col style="width: 13%">
+<col style="width: 1%">
+<col style="width: 67%">
+<col style="width: 3%">
 <col style="width: 11%">
+<col style="width: 15%">
 </colgroup>
 <thead>
 <tr class="header">
+<th style="text-align: right;">X</th>
 <th style="text-align: left;">PaperTitle</th>
 <th style="text-align: right;">Year</th>
 <th style="text-align: left;">Journal</th>
 <th style="text-align: left;">FirstAuthorName_cleaned</th>
-<th style="text-align: left;">FirstAuthorCountry</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: right;">1</td>
 <td style="text-align: left;">Corroborating external observation by cognitve data in the description and modelling of traditional music</td>
 <td style="text-align: right;">2010</td>
 <td style="text-align: left;">Musicae Scientiae</td>
 <td style="text-align: left;">Arom, Simha</td>
-<td style="text-align: left;">France</td>
 </tr>
 <tr class="even">
+<td style="text-align: right;">2</td>
 <td style="text-align: left;">Looking into the eyes of a conductor performing Lerdahl’s “Time after Time”</td>
 <td style="text-align: right;">2010</td>
 <td style="text-align: left;">Musicae Scientiae</td>
 <td style="text-align: left;">Bigand, Emmanuel</td>
-<td style="text-align: left;">France</td>
 </tr>
 <tr class="odd">
+<td style="text-align: right;">3</td>
 <td style="text-align: left;">Auditive Analysis of the Quartetto per Archi in due tempi (1955) by Bruno Maderna</td>
 <td style="text-align: right;">2010</td>
 <td style="text-align: left;">Musicae Scientiae</td>
 <td style="text-align: left;">Adesi, Anna Rita</td>
-<td style="text-align: left;">Italy</td>
 </tr>
 <tr class="even">
+<td style="text-align: right;">4</td>
 <td style="text-align: left;">The Difficulty of discerning between composed and improvised nusic</td>
 <td style="text-align: right;">2010</td>
 <td style="text-align: left;">Musicae Scientiae</td>
 <td style="text-align: left;">Lehmann, Andreas C.</td>
-<td style="text-align: left;">Germany</td>
 </tr>
 <tr class="odd">
+<td style="text-align: right;">5</td>
 <td style="text-align: left;">Musical Parameters and Children’s Images of motion</td>
 <td style="text-align: right;">2010</td>
 <td style="text-align: left;">Musicae Scientiae</td>
 <td style="text-align: left;">Eitan, Zohar</td>
-<td style="text-align: left;">Israel</td>
 </tr>
 </tbody>
 </table>
@@ -375,57 +375,11 @@ If a study utilised music from multiple origin counties, please enter these sepa
 <li><p><code>CoderName</code>: enter your name</p></li>
 <li><p><code>Keywords</code>: enter all keywords as listed at the start of the article, separated by semi-colons, for instance: functional harmony; extended tonality; harmonic substitutions; music perception; musical syntax</p></li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "PaperTitle"                                  
- [2] "Year"                                        
- [3] "Journal"                                     
- [4] "FirstAuthorName_cleaned"                     
- [5] "FirstAuthorCountry"                          
- [6] "CountryDataCollected"                        
- [7] "SamplePrimaryCountryofOrigin"                
- [8] "Ethnicity"                                   
- [9] "SampleSize"                                  
-[10] "SampleAgeMean"                               
-[11] "SampleAgeSD"                                 
-[12] "FemaleParticipantsNumber"                    
-[13] "MaleParticipantsNumber"                      
-[14] "SampleMusicianshipDescription"               
-[15] "SamplingMethodDescription"                   
-[16] "SampleOtherDescription"                      
-[17] "MeanYearsEducation"                          
-[18] "MusicPrimaryGenre"                           
-[19] "MusicOriginCountry"                          
-[20] "MusicSource"                                 
-[21] "Comments"                                    
-[22] "CoderName"                                   
-[23] "Keywords"                                    
-[24] "humansample"                                 
-[25] "musicstudies"                                
-[26] "paper_id"                                    
-[27] "study_id"                                    
-[28] "paper_id_study_id"                           
-[29] "sample_id"                                   
-[30] "sample_size"                                 
-[31] "sample_agemean"                              
-[32] "sample_agesd"                                
-[33] "sample_female"                               
-[34] "sample_male"                                 
-[35] "sample_country_data_collected"               
-[36] "sample_sampling_method_description"          
-[37] "SamplePrimaryCountryofOrigin_online_inferred"
-[38] "gender_balance"                              
-[39] "SampleSizeAggregated"                        
-[40] "CountryDataCollected_WEOG"                   
-[41] "FirstAuthorCountry_WEOG"                     </code></pre>
-</div>
-</div>
 <p>Save (if necessary)</p>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>needs_saving <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(needs_saving<span class="sc">==</span><span class="cn">TRUE</span>){</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(d,df,D,DF,<span class="at">file=</span><span class="st">'data/WEIRD_data.Rdata'</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>needs_saving <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(needs_saving<span class="sc">==</span><span class="cn">TRUE</span>){</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(d,df,D,DF,<span class="at">file=</span><span class="st">'data/WEIRD_data.Rdata'</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>

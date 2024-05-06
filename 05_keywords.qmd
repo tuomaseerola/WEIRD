@@ -2,7 +2,7 @@
 format: 
   html:
     fig-width: 14
-    fig-height: 10
+    fig-height: 14
 ---
 
 ## Keywords
@@ -18,12 +18,12 @@ library(ggplot2)
 load(file='data/WEIRD_data.Rdata')
 ```
 
-Create Figure 3 showing 6 rankings of keywords across key variables.
+Create Figure 3 showing rankings of keywords across six variables.
 
 ```{r}
 #| eval: true
 #| echo: true
 #| warning: false
-source('scripts/keyword_analysis_multiple_ver2.R')
+source('scripts/keyword_analysis.R')
 ```
 

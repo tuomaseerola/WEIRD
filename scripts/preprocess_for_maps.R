@@ -70,9 +70,9 @@ map<-dplyr::filter(map,admin!='Nauru')
 map<-dplyr::filter(map,admin!='Niue')
 
 # Convert into country codes
-map$COWcode <- countrycode(map$adm0_a3, "iso3c", "ecb") 
+map$COWcode <- countrycode(map$adm0_a3, "iso3c", "ecb",warn = FALSE) 
 
 # Some locations not labelled....
 ind <- is.na(map$COWcode)
-map$formal_en[ind]
+#map$formal_en[ind]
 

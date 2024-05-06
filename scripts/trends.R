@@ -82,7 +82,7 @@ tmp4 <- dplyr::filter(tmp4,n > 5)
 head(tmp4)
 g4<-ggplot(tmp4,aes(Year,genderprop,shape=CountryDataCollected_WEOG,color=CountryDataCollected_WEOG,label=n))+
   geom_point(size=3,show.legend = F)+
-  geom_text_repel(nudge_y = .02,show.legend = F)+
+  geom_text_repel(nudge_y = .02,show.legend = F,family = 'Times')+
   geom_smooth(method = 'lm',fullrange=TRUE,se=FALSE)+
   scale_color_brewer(name='Group',palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
   scale_y_continuous(limits=c(0,1),breaks = seq(0,1,by=.25),expand = c(0.005,0.085),labels = seq(0,1,by=.25)*100)+
@@ -91,7 +91,7 @@ g4<-ggplot(tmp4,aes(Year,genderprop,shape=CountryDataCollected_WEOG,color=Countr
   ylab('% Female Participants')+
   theme_bw(base_size = 15,base_family = 'Times')+
   theme(legend.position="none")
-#g4
+g4
 
 #### 5 UNI by WEOG -----------
 #cat('\n University sample:\n')
@@ -118,9 +118,11 @@ g5<-ggplot(tmp5,aes(Year,prop,color=CountryDataCollected_WEOG,shape=CountryDataC
   scale_color_brewer(name='Group', palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
   ylab('% University Participants')+
   theme_bw(base_size = 15,base_family = 'Times')+
-  theme(legend.position=c(.80, .82))
+  theme(legend.position=c(.80, .82),legend.key = element_blank())+
+  guides(color=guide_legend(override.aes=list(fill=NA)))+
+  theme(legend.background=element_rect(fill = alpha("white", 0.1)))
   #theme(legend.position="top")
-#g5
+g5
 
 #### 6 Stimulus Origin by WEOG -----------
 DM <- dplyr::filter(d,musicstudies==TRUE)
@@ -177,6 +179,7 @@ g6<-ggplot(tmp6,aes(Year,prop,color=CountryDataCollected_WEOG,shape=CountryDataC
 
 G <- cowplot::plot_grid(g1,g2,g3,g4,g6,g5,nrow = 3)
 print(G)
+
 if(saveplots==TRUE){
   ggsave(filename = 'figure2.pdf',G,device = 'pdf',height = 12,width = 12)
 }

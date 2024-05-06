@@ -15,13 +15,13 @@ library(ggplot2)
 
 The manually annotated data titled `data/WEIRD coding final corr names.csv` was cleaned through process captured in `weird data cleaning.R` script.
 
-Here we take this manually annotated and cleaned data, `data/WEIRD part cleaned Feb24.csv`. 
+Here we take this manually annotated and cleaned data, `data/WEIRD_06_05_2024.csv`. 
 
 ```{r}
 #| eval: true
 #| echo: true
 #| output: asis
-d <- read.csv('data/WEIRD part cleaned Feb24.csv',header = TRUE)
+d <- read.csv('data/WEIRD_06_05_2024.csv',header = TRUE)
 knitr::kable(d[1:5,1:5])
 ```
 
@@ -92,13 +92,6 @@ If a study utilised music from multiple origin counties, please enter these sepa
   
 * `Keywords`: enter all keywords as listed at the start of the article, separated by semi-colons, for instance: functional harmony; extended tonality; harmonic substitutions; music perception; musical syntax 
 
-
-```{r}
-#| eval: true
-#| echo: true
-names(d)
-
-```
 
 Save (if necessary)
 

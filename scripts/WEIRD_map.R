@@ -1,6 +1,6 @@
 saveplots <- FALSE
 
-country_freq_samples <- dplyr::summarise(group_by(d,CountryDataCollected,CountryDataCollected_WEOG),s = n())
+country_freq_samples <- dplyr::summarise(group_by(d,CountryDataCollected,CountryDataCollected_WEOG),s = n(),.groups = 'drop')
 head(country_freq_samples)
 country_freq_samples$s<-0
 country_freq_samples$s[country_freq_samples$CountryDataCollected_WEOG=='WEOG']<-1
@@ -18,7 +18,7 @@ head(country_freq_samples)
 country_freq_samples<-drop_na(country_freq_samples)
 # Merge WEIRD and MAP data
 country_freq_samples$N<-factor(country_freq_samples$N)
-map2 <- merge(map, country_freq_samples, by.x = "COWcode", by.y = "cown", all = TRUE)
+map2 <- merge(map, country_freq_samples, by.x = "COWcode", by.y = "cown", all = TRUE,warn = FALSE)
 
 target_crs <- "+proj=eqearth +wktext"
 map2_eqea <- st_transform(map2, target_crs)

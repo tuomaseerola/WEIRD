@@ -5,15 +5,17 @@
 # Status: Complete
 
 #### 0. Define functions ---------
-#library(Hmisc)
-#library(DescTools)
-#library(weights)
-#library(boot)
+library(Hmisc)
+library(DescTools)
+library(weights)
+library(boot)
+library(papaja)
 
 my.function = function(data,index){
   d = data[index,]  #create bootstrap sample of all columns of original data?
   return(weighted.mean(d$counts, d$weights))  #calculate weighted mean using 'counts' and 'weights' columns
 }
+
 
 
 #### ROW 2 Sample Size -------------------------
@@ -371,25 +373,25 @@ table(DF$sample_country_data_collected,DF$sample_country_data_collected_WEOG)
 
 DF$uni <- str_detect(DF$SampleOtherDescription,'universi|undergrad')
 DF$uni <- factor(DF$uni,levels = c("FALSE",'TRUE'),labels = c("others","university"))
-
+table(DF$uni)
 ## university student
-DF$uni <- str_detect(DF$SampleOtherDescription,'universi')
-t<-table(DF$uni)
-t<-round(t/sum(t)*100)
-t
-## university student
-DF$uni <- str_detect(DF$SampleOtherDescription,'undergra')
-t<-table(DF$uni)
-t<-round(t/sum(t)*100)
-t
-DF$uni <- str_detect(DF$SampleOtherDescription,'chil|infan')
-t<-table(DF$uni)
-t<-round(t/sum(t)*100)
-t
-DF$uni <- str_detect(DF$SampleOtherDescription,'chil|infan|undergra|univer')
-t<-table(DF$uni)
-t<-round(t/sum(t)*100)
-t
+# DF$uni <- str_detect(DF$SampleOtherDescription,'universi')
+# t<-table(DF$uni)
+# t<-round(t/sum(t)*100)
+# t
+# ## university student
+# DF$uni <- str_detect(DF$SampleOtherDescription,'undergra')
+# t<-table(DF$uni)
+# t<-round(t/sum(t)*100)
+# t
+# DF$uni <- str_detect(DF$SampleOtherDescription,'chil|infan')
+# t<-table(DF$uni)
+# t<-round(t/sum(t)*100)
+# t
+# DF$uni <- str_detect(DF$SampleOtherDescription,'chil|infan|undergra|univer')
+# t<-table(DF$uni)
+# t<-round(t/sum(t)*100)
+# t
 
 tmp <- dplyr::select(DF,sample_country_data_collected_WEOG,uni)
 tmp<-drop_na(tmp)

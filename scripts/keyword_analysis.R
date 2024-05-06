@@ -5,9 +5,6 @@
 
 plotflag <- FALSE
 
-table(d$FirstAuthorCountry,d$FirstAuthorCountry_WEOG)
-sum(table(d$FirstAuthorCountry,d$FirstAuthorCountry_WEOG))
-
 ## remove studies, keep articles (to avoid duplicating keywords)
 D <- dplyr::filter(d,study_id=='study1') # 1360 articles (1360 correct!)
 
@@ -16,145 +13,240 @@ if(!dim(D)[1]==1360){
   break
 }
 
-# delete studies where CountryDataCollected is not defined
-D<-dplyr::filter(D,!is.na(CountryDataCollected))
-dim(D)
-
-use_USD_as_WEOG <- TRUE
-if(use_USD_as_WEOG==TRUE){
-  D$CountryDataCollected_WEOG_orig <- D$CountryDataCollected_WEOG
-  # optional: replace WEOG with USD median split
-  # USDC refers to primaryCountryDataCollected
-  D$CountryDataCollected_WEOG<-D$CountryDataCollected_USD_Md
-  D$CountryDataCollected_WEOG<-factor(D$CountryDataCollected_WEOG,levels = c("Western","Non-Western"),labels = c("WEOG","Non-WEOG"))
-  table(D$CountryDataCollected_WEOG,D$CountryDataCollected_WEOG_orig)
-  
-  D$FirstAuthorCountry_WEOG<-D$FirstAuthorCountry_USD_Md
-  D$FirstAuthorCountry_WEOG<-factor(D$FirstAuthorCountry_WEOG,levels = c("Western","Non-Western"),labels = c("WEOG","Non-WEOG"))
-}
 # eliminate those where the WEOG has not been defined
 D <- dplyr::filter(D,!is.na(CountryDataCollected_WEOG))
 sum(is.na(D$CountryDataCollected_WEOG))
-dim(D) # 1123
+dim(D) # 1221
 
-KW<-NULL
+#### 1. Specify Age -------------------------
+
+#### 2. specify Uni Sample -------------------------
+D$SampleOtherDescription[is.na(D$SampleOtherDescription)]<-'Not specified'
+D$uni <- str_detect(D$SampleOtherDescription,'universi|undergrad')
+D$uni <- factor(D$uni,levels = c("FALSE",'TRUE'),labels = c("others","university"))
+table(D$uni)
+#### 3. specify Musician -------------------------
+D$SampleMusicianshipDescription[is.na(D$SampleMusicianshipDescription)]<-'Not specified'
+table(D$SampleMusicianshipDescription)
+D$SampleMusicianshipDescriptionBinary<-factor(D$SampleMusicianshipDescription,
+                                                levels = c("musicians","musicians; non-musicians","non-musicians","Not specified"),
+                                                labels = c("musicians","others","others","others"))
+
+
+#### 4. specify Western -------------------------
+D$MusicOriginCountry[is.na(D$MusicOriginCountry)]<-'Not specified'
+
+D$origin<-'X'
+D$origin<-paste('X',D$MusicOriginCountry)
+D$origin[str_detect(D$MusicOriginCountry,'^Western$')]<- 'Western'
+D$origin[str_detect(D$MusicOriginCountry,'Africa')]<- 'Non-Western'
+D$origin[str_detect(D$MusicOriginCountry,'Not specified')]<- 'Not specified'
+D$origin[str_detect(D$MusicOriginCountry,'Portugal')]<- 'Western'
+D$origin[str_detect(D$MusicOriginCountry,'Estonia')]<- 'Western'
+D$origin[str_detect(D$MusicOriginCountry,'Hungary')]<- 'Western'
+D$origin[str_detect(D$MusicOriginCountry,'Spain')]<- 'Western'
+D$origin[str_detect(D$MusicOriginCountry,'Australia')]<- 'Non-Western' # CHECK, if abo
+D$origin[str_detect(D$origin,'X ')]<- 'Non-Western'
+
+D$origin <- factor(D$origin,levels = c("Non-Western","Not specified","Western"),labels = c("other","other","western"))
+table(D$origin)
+
+
+
+#### keyword analysis ------------------
+KW <- NULL
 d_index <- NULL
 WEOG_index <- NULL
+
+u_index <- NULL
+o_index <- NULL
+m_index <- NULL
+a_index <- NULL # age
+g_index <- NULL # gender balance
+
 for (k in 1:nrow(D)) {
   tmp <- D$Keywords[k]
   WEOG <- as.character(D$CountryDataCollected_WEOG[k])
+  u <- as.character(D$uni[k])
+  o <- as.character(D$origin[k])
+  m <- as.character(D$SampleMusicianshipDescriptionBinary[k])
+  a <- as.character(D$SampleAgeMean[k])
+  g <- as.character(D$gender_balance[k])
   tmp <- stringi::stri_trans_general(tmp,"latin-ascii")
   if(!is.na(tmp)){
     kw<-str_split(tmp,'[;,]', simplify = TRUE)
     KW<-c(KW,kw)
     d_index<-c(d_index,rep(k,length(kw)))
+    u_index<-c(u_index,rep(u,length(kw)))
+    o_index<-c(o_index,rep(o,length(kw)))
+    m_index<-c(m_index,rep(m,length(kw)))
+    a_index<-c(a_index,rep(a,length(kw)))
+    g_index<-c(g_index,rep(g,length(kw)))
     WEOG_index<-c(WEOG_index,rep(WEOG,length(kw)))
   }
 }
-head(d_index)
-head(WEOG_index)
-length(unique(d_index))
-
-KW<-stringi::stri_trans_general(KW,"latin-ascii")
-
-KW<-str_remove_all(KW,'^ ') # remove leading spaces
-KW<-tolower(KW)
-KW<-str_remove_all(KW,'ê') # remove garbage
-KW<-str_remove_all(KW,'�') # remove garbage
-KW<-str_remove_all(KW,'s$') # remove plurals
-KW<-str_remove_all(KW,'ology$') # Methodology to method
-KW<-str_remove_all(KW,'^\n') # Methodology to method
-KW<-str_replace_all(KW,'stres','stress') # remove plurals
-KW<-str_replace_all(KW,'sadnes','sadness') # remove plurals
-KW<-str_replace_all(KW,'analysi','analysis') # remove plurals
-KW<-str_replace_all(KW,'loudnes','loudness') # remove plurals
-KW<-str_replace_all(KW,'aesthetic','aesthetics') # remove plurals
-KW<-str_replace_all(KW,'psychophysi','psychophysiology') # remove plurals
-KW<-stringi::stri_trans_general(KW,"latin-ascii")
 
 length(KW)
-length(d_index)
-tmp<-data.frame(KW,WEOG_index)
+head(d_index)
+head(WEOG_index)
+head(a_index)
+head(g_index)
+
+KW<-stringi::stri_trans_general(KW,"latin-ascii")
+
+KW_O<-KW
+
+source('scripts/simplify_keywords.R')
+length(KW_O)
+length(KW)
+tmp<-data.frame(KW_O,KW)
 head(tmp)
-tmp1<-dplyr::filter(tmp,WEOG_index=='WEOG')
-dim(tmp1)
-tmp2<-dplyr::filter(tmp,WEOG_index=='Non-WEOG')
-head(tmp2)
-dim(tmp2)
+length(unique(KW_O))
+length(unique(KW))
+  
+table(KW)
+t<-data.frame(table(KW))
+t<-dplyr::arrange(t,-Freq)
+head(t,30)
 
-freq1<-data.frame(table(tmp1$KW))
-head(freq1)
-freq1<-dplyr::arrange(freq1,-Freq)
-head(freq1)
-tail(freq1)
-freq2<-data.frame(table(tmp2$KW))
-freq2<-dplyr::arrange(freq2,-Freq)
-head(freq2)
+#write.csv(table(KW),file = 'kw_tmp.csv')
 
-KW_unique<-unique(KW)
-which(KW_unique=='representativeness heuristic')
+data <- data.frame(KW,WEOG_index,a_index,u_index,m_index,o_index,g_index)
+head(data)
+data$a_index_n<-as.numeric(data$a_index)
+data$a_index_nB<-cut(data$a_index_n,breaks = c(0,median(data$a_index_n,na.rm = T),100),labels = c('Young','Old'))
+table(data$a_index_nB)
 
-freq_table<-data.frame(KW=KW_unique,WEOG=rep(0,length(KW_unique)),nonWEOG=rep(0,length(KW_unique)))
-head(freq_table)
-rownames(freq_table)<-NULL
-length(KW_unique)
-for (k in 1:length(KW_unique)) {
-#  print(k)
-  x1 <- freq1$Freq[which(freq1$Var1==KW_unique[k])]
-  if(length(x1)>0){
-    freq_table$WEOG[k] <- as.integer(x1)
-  }
-  x2 <- freq2$Freq[which(freq2$Var1==KW_unique[k])]
-  if(length(x2)>0){
-    freq_table$nonWEOG[k] <- as.integer(x2)
-  }
-}
-freq_table<-dplyr::arrange(freq_table,-nonWEOG)
-#head(freq_table,20)
-#tail(freq_table)
+data$g_index_n<-as.numeric(data$g_index)
+data$g_index_n
+data$g_index_nB<-cut(data$g_index_n,breaks = c(-0.1,.5,1.1),labels = c('Male dom','Female dom'))
+table(data$g_index_nB)
+head(data)
+table(data$o_index)
+source('scripts/count2category.R')
+x1 <- count2category(data, index="WEOG_index", str1="WEOG", str2="Non-WEOG")
+head(x1,25)
+x2 <- count2category(data, index="m_index", str1="musicians", str2="others")
+head(x2,25)
+x3 <- count2category(data, index="o_index", str1="western", str2="other")
+head(x3,25)
+x4 <- count2category(data, index="u_index", str1="university", str2="others")
+head(x4,25)
+# x5 <- count2category(data, index="a_index_nB", str1='Young', str2='Old')
+# head(x5,25)
+# x6 <- count2category(data, index="g_index_nB", str1='Male dom', str2='Female dom')
+# head(x6,25)
+# mean per KW
+x6<-summarise(group_by(data,KW),prop=mean(g_index_n,na.rm=TRUE),Freq=n())
+x6<-dplyr::arrange(x6,-Freq)
+x6<-drop_na(x6)
+head(x6,25)
 
-freq_table$Freq<-freq_table$WEOG+freq_table$nonWEOG
-freq_table$prop<-freq_table$WEOG/freq_table$Freq
-head(freq_table)
-freq_table<-dplyr::arrange(freq_table,-nonWEOG)
-head(freq_table)
+x5<-summarise(group_by(data,KW),prop=mean(a_index_n,na.rm=TRUE),Freq=n())
+x5<-dplyr::arrange(x5,-Freq)
+x5<-drop_na(x5)
+head(x5,25)
 
-## New: NOrmalise size within WEOG AND non-WEOG
-freq_table$WEOG_R<-freq_table$WEOG/max(freq_table$WEOG)
-freq_table$nonWEOG_R<-freq_table$nonWEOG/max(freq_table$nonWEOG)
-freq_table$joint_norm_freq <- (freq_table$nonWEOG_R + freq_table$WEOG_R) / 2
-head(freq_table)
-freq_table<-dplyr::arrange(freq_table,-joint_norm_freq)
-freq_table$prop_RS<-scales::rescale(freq_table$prop,to=c(0,90))
-freq_table$prop_RS<- 45-freq_table$prop_RS
-head(freq_table,50)
 
-freq_table$prop_RS<-scales::rescale(freq_table$prop^3.3,from=c(0,1), to=c(-45,45))
-N<-55+15
-data<-freq_table[2:N,]
-median(data$prop_RS)
-mean(data$prop_RS)
-hist(data$prop_RS)
-mean(data$prop)
-median(data$prop)
+FROM<-1
+TO<-25
+head(x1)
+g1a<-ggplot(data = x1[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
+  coord_flip() +
+  theme(text = element_text(size=16)) +
+  scale_y_continuous(breaks=seq(-.5,.5,.1),labels=(seq(-.5,.5,.10)+.5)*100,limits = c(-.5,.5)) + 
+  scale_fill_grey()+
+  ylab("% WEIRD")+
+  xlab("Keyword (ranked)")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+g1a
 
+head(x2)
+g2a<-ggplot(data = x2[FROM:TO,], aes(x = reorder(KW,prop),y=prop, label = Freq)) + 
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
+  coord_flip() +
+  theme(text = element_text(size=16)) +
+  scale_y_continuous(breaks=seq(0,1,.1),labels=(seq(0,1,.10))*100,limits = c(0,1)) + 
+  scale_fill_brewer(palette="Dark2")+
+  ylab("% Musicians")+
+  xlab("Keyword (ranked)")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+g2a
+
+head(x3)
+g3a<-ggplot(data = x3[FROM:TO,], aes(x = reorder(KW,prop),y=prop, label = Freq)) + 
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
+  coord_flip() +
+  theme(text = element_text(size=16)) +
+  scale_y_continuous(breaks=seq(0,1,.1),labels=(seq(0,1,.10))*100,limits = c(0,1)) + 
+  scale_fill_brewer(palette="Dark2")+
+  ylab("% Western music")+
+  xlab("Keyword (ranked)")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+g3a
+head(x4)
+g4a<-ggplot(data = x4[FROM:TO,], aes(x = reorder(KW,prop),y=prop, label = Freq)) + 
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .027,family = 'Times')+
+  coord_flip() +
+  theme(text = element_text(size=16)) +
+  scale_y_continuous(breaks=seq(0,1,.1),labels=(seq(0,1,.10))*100,limits = c(0,1)) + 
+  scale_fill_brewer(palette="Dark2")+
+  ylab("% University samples")+
+  xlab("Keyword (ranked)")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+g4a
+head(x5)
+Md<-median(x5$prop,na.rm=TRUE)
+Md
+g5a<-ggplot(data = x5[FROM:TO,], aes(x = reorder(KW,prop),y=prop-Md, label = Freq)) + 
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = 0.70,family = 'Times')+
+  coord_flip() +
+  theme(text = element_text(size=16)) +
+  scale_y_continuous(breaks=seq(-15,15,5),limits = c(-18,17)) + 
+  scale_fill_brewer(palette="Dark2")+
+  ylab("Years from the median age")+
+  xlab("Keyword (ranked)")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+g5a
+
+head(x6,25)
+#x6<-drop_na(x6)
+#Md<-median(x6$prop,na.rm=TRUE)
+#Md
+
+g6a<-ggplot(data = x6[FROM:TO,], aes(x = reorder(KW,prop),y=prop-.5, label = Freq)) + 
+  geom_col(fill='grey70',color='grey10') +
+  geom_text(nudge_y = .0033,family = 'Times')+
+  coord_flip() +
+  theme(text = element_text(size=16)) +
+  scale_y_continuous(breaks=seq(-.5,.5,.05),labels=(seq(-.5,.5,.05)+.5)*100,limits = c(-.10,.12)) + 
+  scale_fill_brewer(palette="Dark2")+
+  ylab("% Female participants")+
+  xlab("Keyword (ranked)")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+g6a
+
+Ga <- cowplot::plot_grid(g1a,g2a,g3a,g4a,g5a,g6a,nrow = 3,ncol = 2)
+print(Ga)
 
 if(plotflag==TRUE){
-  library(ggwordcloud)
-  set.seed(42)
-
-  g5<-ggplot(data, aes(label = KW,size=joint_norm_freq,color=prop_RS,angle=prop_RS)) +
-    geom_text_wordcloud(area_corr = TRUE) +
-    scale_size_area(max_size = 50, trans = power_trans(1/.7)) +
-    scale_color_gradient2(low ="firebrick1",mid = "gray10",high = "blue",midpoint = -2.311)+
-    theme_minimal()
-  g5
-
-  ggsave(filename = 'wordcloud_no_music_WEOG_R2_60.pdf',device = "pdf",g5,height = 6,width = 7.5)
-
+  ggsave(filename = 'figure3.pdf',Ga,device = 'pdf',width = 14,height = 15)
 }
-
-print(g5)
-
-rm(D,data,freq_table,freq1,freq2)
-
