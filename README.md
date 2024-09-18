@@ -1,8 +1,5 @@
 # WEIRD
 
-
-# WEIRD
-
 This repository contains the data and analysis scripts related to
 manuscript titled *Participant and Musical Diversity in Music Psychology
 Research* by Kelly Jakubowski, Nashra Ahmad, James Armitage, Logan
@@ -27,3 +24,7 @@ The public-facing version of this repository is at
 - [4 Trends](04_trends.qmd)
 
 - [5 Keywords](05_keywords.qmd)
+
+- [6 Alternative analyses](06_alternative_analyses.qmd)
+
+Last edit: 18 September 2024

@@ -1,0 +1,100 @@
+
+# Alternative analyses
+
+```{r,results='asis'}
+#| eval: true
+#| echo: false
+#| warning: false
+#| error: false
+#| output: false
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+
+library(Hmisc)
+library(DescTools)
+library(weights)
+library(boot)
+library(papaja)
+
+load(file='data/WEIRD_data.Rdata')
+```
+
+In the paper we utilise the division of WEIRD/Non-WEIRD countries suggested by Krys et al. 2024.
+
+```{r baseline,results='asis'}
+#| eval: true
+#| echo: true
+#| warning: false
+#| error: false
+#| output: asis
+knitr::kable(table(d$CountryDataCollected_WEOG)/sum(table(d$CountryDataCollected_WEOG)),digits = 2)
+```
+
+We considered two possible alternatives earlier, one based on the UN definition of the _Western European and Others Group_ (WEOG) and one based on cultural distances (Mutkukhrisna et al., 2020). In short, using these divisions to allocate WEIRD and non-WEIRD does not materially change our analyses or results. Here are the main summaries conducted with these two alternative country divisions. 
+
+## Descriptives for alternative WEIRD formulations: WEOG countries
+
+Western European and Others Group (WEOG) defined by UN, [https://en.wikipedia.org/wiki/Western_European_and_Others_Group](https://en.wikipedia.org/wiki/Western_European_and_Others_Group).
+
+```{r,results='asis'}
+#| eval: true
+#| echo: true
+#| warning: false
+#| error: false
+#| output: asis
+source('scripts/alternative_WEIRD_indices.R')
+d1 <- alternative_WEIRD_indices(d,'WEOG'); d<-d1$d; DF<-d1$DF
+knitr::kable(table(d$CountryDataCollected_WEOG)/sum(table(d$CountryDataCollected_WEOG)),digits = 2)
+source('scripts/table1.R')
+```
+
+## Descriptives for alternative WEIRD formulations: Cultural distance (from the US)
+
+Muthukrishna et al., 2020, [https://journals.sagepub.com/doi/full/10.1177/0956797620916782#supplementary-materials](https://journals.sagepub.com/doi/full/10.1177/0956797620916782#supplementary-materials) defines cultural distances between countries based on numerous indices (religion, political orientation, social, financial, sexual, law, media, etc.). Since this metric has been established for 80 countries, we inferred that some countries in our dataset are culturally or geographically proximate countries, listed below. See also http://www.culturaldistance.com
+
+```
+Austria from Germany
+Beligum from France
+Croatia from Slovenia
+Czech Republic from Poland
+Denmark from Sweden
+Ireland from Great Britain
+Portugal from Spain
+Slovakia from Slovenia
+Belgium from France
+Central African Republic from Mali
+Greece from Armenia
+Iceland from Norway
+Israel from Japan
+Kenya from Ethiopia
+Latvia from Estonia
+Serbia from Slovenia
+UAE from Malaysia
+```
+
+We split the countries into WEIRD or non-WEIRD based on mean distance from the US + 0.02.
+
+```{r,results='asis'}
+#| eval: true
+#| echo: true
+#| warning: false
+#| error: false
+#| output: asis
+source('scripts/alternative_WEIRD_indices.R')
+d2 <- alternative_WEIRD_indices(d,'Muthukhrisna'); d <- d2$d; DF <- d2$DF
+knitr::kable(table(d$CountryDataCollected_WEOG)/sum(table(d$CountryDataCollected_WEOG)),digits = 2)
+source('scripts/table1.R')
+```
+
+## Summary of differences
+
+When these two alternative attributions (WEOG and Mutkukhrisna et al., 2020) of countries across WEIRD/non-WEIRD divide are incorporated into the analysis of the main trends in the sample of music psychology studies, the outcome reported in Table 1 with the country division provided by Krys et al. provides largely identical patterns despite small fluctuations in the WEIRD/non-WEIRD division (non-WEIRD in Krys et al. is 23%, in WEOG 16%, and in Mutkukhrisna 12% in this data).
+
+To put the differences in the actual variables of interest more precisely, there are 11 statistical comparisons (of counts or means) in Table 1. For the division based on WEOG countries, one of the rows in Table 1 results in a difference (the sample size is significant at _p_<.05 level). For the second variant country division by Mutkukhrisna et al., there are no differences to the reported division of countries.
+
+## References
+
+* Krys, K., de Almeida, I., Wasiel, A., & Vignoles, V. L. (2024). WEIRD–Confucian comparisons: Ongoing cultural biases in psychology’s evidence base and some recommendations for improving global representation. _American Psychologist._ [https://doi.org/10.1037/amp0001298](https://doi.org/10.1037/amp0001298)
+
+* Muthukrishna, M., Bell, A. V., Henrich, J., Curtin, C. M., Gedranovich, A., McInerney, J., & Thue, B. (2020). Beyond Western, Educated, Industrial, Rich, and Democratic (WEIRD) Psychology: Measuring and Mapping Scales of Cultural and Psychological Distance. _Psychological Science, 31(6)_, 678-701. [https://doi.org/10.1177/0956797620916782](https://doi.org/10.1177/0956797620916782)

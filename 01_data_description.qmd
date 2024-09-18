@@ -15,7 +15,7 @@ library(ggplot2)
 
 The manually annotated data titled `data/WEIRD coding final corr names.csv` was cleaned through process captured in `weird data cleaning.R` script.
 
-Here we take this manually annotated and cleaned data, `data/WEIRD_06_05_2024.csv`. 
+Here we take this manually annotated and cleaned data, [data/WEIRD_06_05_2024.csv](`data/WEIRD_06_05_2024.csv`). 
 
 ```{r}
 #| eval: true

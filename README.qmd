@@ -23,4 +23,6 @@ The public-facing version of this repository is at [https://tuomaseerola.github.
 
 - [5 Keywords](05_keywords.qmd)
 
+- [6 Alternative analyses](06_alternative_analyses.qmd)
 
+Last edit: 18 September 2024

@@ -3,28 +3,35 @@
 # T. Eerola, 23/3/2024
 
 library(ggrepel)
-saveplots <- FALSE
+source('scripts/printp.R')
+saveplots <- TRUE
 
 #### Temporal trends related WEO (diversity) -----------
 
 #### 1 WEOG prop -----------
-tmp <- d %>%
+#table(d$CountryDataCollected,d$CountryDataCollected_WEOG)
+#table(df$CountryDataCollected,df$CountryDataCollected_WEOG)
+
+tmp <- df %>%
   select(Year,CountryDataCollected_WEOG) %>%
   drop_na() %>%
   group_by(Year) %>%
   summarise(WEOG = sum(CountryDataCollected_WEOG=='WEOG'), n = n(),prop=WEOG/n)
 head(tmp)
 
+s1 <- cor.test(tmp$Year,tmp$prop)
+subplot1_stat <- paste0('italic(p) == ',printp(s1$p.value))
+
 g1<-ggplot(tmp,aes(Year,prop))+
-#  geom_line()+
   geom_point()+
   geom_smooth(method = 'lm',fullrange=TRUE,se=TRUE,color='grey20')+
 #  scale_y_continuous(breaks = seq(0,1,by=0.25),limits = c(0.3,1))+
-  scale_y_continuous(limits=c(0.5,1),breaks = seq(0,1,by=.1),expand = c(0.005,0.085),labels = seq(0,1,by=.1)*100)+
+  scale_y_continuous(limits=c(0.7,1),breaks = seq(0,1,by=.1),expand = c(0.005,0.085),labels = seq(0,1,by=.1)*100)+
   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
   ylab('% Studies with Data from WEIRD')+
+  annotate("text",x=2016,y=0.96,label=subplot1_stat,parse=TRUE,family="Times",size=5)+
   theme_bw(base_size = 15,base_family = 'Times')
-#g1
+g1
 
 #### 2 First author country and WEIRD -------
 articles <- dplyr::filter(d,study_id=='study1') # 1360 articles (1360 correct!)
@@ -36,12 +43,16 @@ tmp2 <- articles %>%
   summarise(WEOG = sum(FirstAuthorCountry_WEOG=='WEOG'), n = n(),prop=WEOG/n)
 head(tmp2)
 
+s2 <- cor.test(tmp2$Year,tmp2$prop)
+subplot2_stat <- paste0('italic(p) == ',printp(s2$p.value))
+subplot2_stat
 g2<-ggplot(tmp2,aes(Year,prop))+
   #geom_line()+
   geom_smooth(method = 'lm',fullrange=TRUE,se=TRUE,color='grey20')+
   geom_point()+
   scale_y_continuous(limits=c(0.7,1),breaks = seq(0,1,by=.1),expand = c(0.005,0.085),labels = seq(0,1,by=.1)*100)+
   #  scale_y_continuous(breaks = seq(0,1,by=0.25),limits = c(0.30,1))+
+  annotate("text",x=2016,y=0.980,label=subplot2_stat,parse=TRUE,family="Times",size=5)+
   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
   ylab('% Articles with 1st Author from WEIRD')+
   theme_bw(base_size = 15,base_family = 'Times')
@@ -54,20 +65,27 @@ tmp3 <- DF %>%
   summarise(AgeSD = median(sample_agesd,na.rm=TRUE),n=n())
 #head(tmp3)
 
-tmp3 <- dplyr::filter(tmp3,n > 5)
+#tmp3 <- dplyr::filter(tmp3,n > 5)
+
+s3W <- cor.test(tmp3$Year[tmp3$CountryDataCollected_WEOG=='WEOG'],tmp3$AgeSD[tmp3$CountryDataCollected_WEOG=='WEOG'])
+subplot3_statW <- paste0('italic(p) == ',printp(s3W$p.value))
+
+s3NW <- cor.test(tmp3$Year[tmp3$CountryDataCollected_WEOG=='Non-WEOG'],tmp3$AgeSD[tmp3$CountryDataCollected_WEOG=='Non-WEOG'])
+subplot3_statNW <- paste0('italic(p) == ',printp(s3NW$p.value))
 
 g3<-ggplot(tmp3,aes(Year,AgeSD,shape=CountryDataCollected_WEOG,color=CountryDataCollected_WEOG,label=n))+
   geom_point(show.legend = F)+
-  geom_smooth(method = 'lm',fullrange=TRUE,se=F)+
+  geom_smooth(mapping = aes(weight = n),method = 'lm',fullrange=TRUE,se=F)+
   geom_text_repel(nudge_y = .02,show.legend = F,family="Times")+
   scale_color_brewer(name='Group',palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
 #  scale_y_continuous(limits=c(0,1),breaks = seq(0,1,by=.25),expand = c(0.005,0.085),labels = seq(0,1,by=.25)*100)+
+  annotate("text",x=2016,y=4.85,label=subplot3_statW,parse=TRUE,family="Times",size=5,color="#377EB8")+
+  annotate("text",x=2016,y=2.15,label=subplot3_statNW,parse=TRUE,family="Times",size=5,color="#E41A1C")+
   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
   ylab('Age Variation (SD) in Samples')+
   theme_bw(base_size = 15,base_family = 'Times')+
   theme(legend.position="none")
 #g3
- 
 
 #### 4 Gender by WEOG -----------
 
@@ -78,20 +96,29 @@ tmp4 <- DF %>%
   summarise(genderprop = mean(sample_gender_balance,na.rm=TRUE),n=n())
 #head(tmp4)
 
-tmp4 <- dplyr::filter(tmp4,n > 5)
-head(tmp4)
+#tmp4 <- dplyr::filter(tmp4,n > 5)
+
+s4W <- cor.test(tmp4$Year[tmp4$CountryDataCollected_WEOG=='WEOG'],tmp4$genderprop[tmp4$CountryDataCollected_WEOG=='WEOG'])
+subplot4_statW <- paste0('italic(p) == ',printp(s4W$p.value))
+
+s4NW <- cor.test(tmp4$Year[tmp4$CountryDataCollected_WEOG=='Non-WEOG'],tmp4$genderprop[tmp4$CountryDataCollected_WEOG=='Non-WEOG'])
+subplot4_statNW <- paste0('italic(p) == ',printp(s4NW$p.value))
+
 g4<-ggplot(tmp4,aes(Year,genderprop,shape=CountryDataCollected_WEOG,color=CountryDataCollected_WEOG,label=n))+
   geom_point(size=3,show.legend = F)+
   geom_text_repel(nudge_y = .02,show.legend = F,family = 'Times')+
-  geom_smooth(method = 'lm',fullrange=TRUE,se=FALSE)+
+  geom_smooth(mapping = aes(weight = n),method = 'lm',fullrange=TRUE,se=FALSE)+
   scale_color_brewer(name='Group',palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
   scale_y_continuous(limits=c(0,1),breaks = seq(0,1,by=.25),expand = c(0.005,0.085),labels = seq(0,1,by=.25)*100)+
   #  scale_y_continuous(breaks = seq(0,1,by=0.25),limits = c(0.3,1))+
+  annotate("text",x=2016,y=0.69,label=subplot4_statW,parse=TRUE,family="Times",size=5,color="#377EB8")+
+  annotate("text",x=2016,y=0.41,label=subplot4_statNW,parse=TRUE,family="Times",size=5,color="#E41A1C")+
   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
   ylab('% Female Participants')+
   theme_bw(base_size = 15,base_family = 'Times')+
   theme(legend.position="none")
-g4
+#g4
+
 
 #### 5 UNI by WEOG -----------
 #cat('\n University sample:\n')
@@ -107,22 +134,31 @@ tmp5 <- DF %>%
   group_by(Year,CountryDataCollected_WEOG) %>%
   summarise(Uni = sum(uni=='university'), n = n(),prop=Uni/n)
 #head(tmp5)
-tmp5 <- dplyr::filter(tmp5,n > 5)
+#tmp5 <- dplyr::filter(tmp5,n > 5)
+
+s5W <- cor.test(tmp5$Year[tmp5$CountryDataCollected_WEOG=='WEOG'],tmp5$prop[tmp5$CountryDataCollected_WEOG=='WEOG'])
+subplot5_statW <- paste0('italic(p) == ',printp(s5W$p.value))
+
+s5NW <- cor.test(tmp5$Year[tmp5$CountryDataCollected_WEOG=='Non-WEOG'],tmp5$prop[tmp5$CountryDataCollected_WEOG=='Non-WEOG'])
+subplot5_statNW <- paste0('italic(p) == ',printp(s5NW$p.value))
 
 g5<-ggplot(tmp5,aes(Year,prop,color=CountryDataCollected_WEOG,shape=CountryDataCollected_WEOG,label=n))+
   geom_point(show.legend = F)+
-  geom_smooth(method = 'lm',fullrange=TRUE,se=F)+
+  geom_smooth(mapping = aes(weight = n), method = 'lm',fullrange=TRUE,se=F)+
   geom_text_repel(nudge_y = .02,show.legend = F,family="Times")+
   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
-  scale_y_continuous(limits=c(0,1),breaks = seq(0,1,by=.25),expand = c(0.005,0.085),labels = seq(0,1,by=.25)*100)+
+  scale_y_continuous(limits=c(0,1.024),breaks = seq(0,1,by=.25),expand = c(0.005,0.085),labels = seq(0,1,by=.25)*100)+
   scale_color_brewer(name='Group', palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
   ylab('% University Participants')+
   theme_bw(base_size = 15,base_family = 'Times')+
+  annotate("text",x=2016,y=0.30,label=subplot5_statW,parse=TRUE,family="Times",size=5,color="#377EB8")+
+  annotate("text",x=2016,y=0.57,label=subplot5_statNW,parse=TRUE,family="Times",size=5,color="#E41A1C")+
   theme(legend.position=c(.80, .82),legend.key = element_blank())+
   guides(color=guide_legend(override.aes=list(fill=NA)))+
   theme(legend.background=element_rect(fill = alpha("white", 0.1)))
   #theme(legend.position="top")
-g5
+#g5
+
 
 #### 6 Stimulus Origin by WEOG -----------
 DM <- dplyr::filter(d,musicstudies==TRUE)
@@ -159,17 +195,25 @@ tmp6 <- DM %>%
   drop_na() %>%
   group_by(Year,CountryDataCollected_WEOG) %>%
   summarise(Origin = sum(origin=='western'), n = n(),prop=Origin/n)
-head(tmp6)
+#head(tmp6)
 
-tmp6 <- dplyr::filter(tmp6,n > 5)
+#tmp6 <- dplyr::filter(tmp6,n > 5)
+
+s6W <- cor.test(tmp6$Year[tmp6$CountryDataCollected_WEOG=='WEOG'],tmp6$prop[tmp6$CountryDataCollected_WEOG=='WEOG'])
+subplot6_statW <- paste0('italic(p) == ',printp(s6W$p.value))
+
+s6NW <- cor.test(tmp6$Year[tmp6$CountryDataCollected_WEOG=='Non-WEOG'],tmp6$prop[tmp6$CountryDataCollected_WEOG=='Non-WEOG'])
+subplot6_statNW <- paste0('italic(p) == ',printp(s6NW$p.value))
 
 g6<-ggplot(tmp6,aes(Year,prop,color=CountryDataCollected_WEOG,shape=CountryDataCollected_WEOG,label=n))+
   geom_point(show.legend = F)+
   geom_text_repel(nudge_y = .02,show.legend = F,family="Times")+
-  geom_smooth(method = 'lm',fullrange=TRUE,se=F)+
+  geom_smooth(mapping = aes(weight = n), method = 'lm',fullrange=TRUE,se=F)+
   scale_x_continuous(breaks = seq(2010,2022,by=2),expand = c(0.005,0.085))+
-  scale_y_continuous(limits=c(0,1),breaks = seq(0,1,by=.25),expand = c(0.005,0.085),labels = seq(0,1,by=.25)*100)+
+  scale_y_continuous(limits=c(0,1.02),breaks = seq(0,1,by=.25),expand = c(0.001,0.085),labels = seq(0,1,by=.25)*100)+
   scale_color_brewer(name='Group', palette = 'Set1',labels=c("Non-WEIRD","WEIRD"))+
+  annotate("text",x=2015.5,y=0.82,label=subplot5_statW,parse=TRUE,family="Times",size=5,color="#377EB8")+
+  annotate("text",x=2015.5,y=0.41,label=subplot5_statNW,parse=TRUE,family="Times",size=5,color="#E41A1C")+
   ylab('% Studies with Western Music')+
   theme_bw(base_size = 15,base_family = 'Times')+
   theme(legend.position="none")
@@ -179,10 +223,28 @@ g6<-ggplot(tmp6,aes(Year,prop,color=CountryDataCollected_WEOG,shape=CountryDataC
 
 G <- cowplot::plot_grid(g1,g2,g3,g4,g6,g5,nrow = 3)
 print(G)
-
 if(saveplots==TRUE){
-  ggsave(filename = 'figure2.pdf',G,device = 'pdf',height = 12,width = 12)
+  ggsave(filename = 'figure2_R1.pdf',G,device = 'pdf',height = 12,width = 12)
 }
+
+#### Report linear trends -------------
+cat('report linear trends for 6 sub-plots:\n')
+cat('Sub-plot 1:\n')
+cat(subplot1_stat)
+cat('Sub-plot 2:\n')
+cat(subplot2_stat)
+cat('Sub-plot 3:\n')
+cat(subplot3_statW)
+cat(subplot3_statNW)
+cat('Sub-plot 4:\n')
+cat(subplot4_statW)
+cat(subplot4_statNW)
+cat('Sub-plot 5:\n') # Note that these are just report in this order (6 and 5)
+cat(subplot6_statW)
+cat(subplot6_statNW)
+cat('Sub-plot 6:\n')
+cat(subplot5_statW)
+cat(subplot5_statNW)
 
 #### Clean ---------
 rm(list = ls()[grep("^tmp", ls())])

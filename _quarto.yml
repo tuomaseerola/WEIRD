@@ -8,6 +8,7 @@ project:
     - 03_maps.qmd
     - 04_trends.qmd
     - 05_keywords.qmd
+    - 06_alternative_analyses.qmd
 website:
   title: "WEIRD"
 #  site-url: "https://tuomaseerola.github.io/WEIRD/index.html"
@@ -18,6 +19,8 @@ website:
         contents:
           - 01_data_description.qmd
           - 02_summary_results.qmd
+          - 06_alternative_analyses.qmd
+
       - section: "Visualisations"
         contents:
           - 03_maps.qmd

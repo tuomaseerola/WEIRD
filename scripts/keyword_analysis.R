@@ -3,7 +3,7 @@
 # T. Eerola, 23/3/2024
 # Status: Complete
 
-plotflag <- FALSE
+plotflag <- TRUE
 
 ## remove studies, keep articles (to avoid duplicating keywords)
 D <- dplyr::filter(d,study_id=='study1') # 1360 articles (1360 correct!)
@@ -63,6 +63,7 @@ o_index <- NULL
 m_index <- NULL
 a_index <- NULL # age
 g_index <- NULL # gender balance
+year_index <- NULL
 
 for (k in 1:nrow(D)) {
   tmp <- D$Keywords[k]
@@ -72,6 +73,7 @@ for (k in 1:nrow(D)) {
   m <- as.character(D$SampleMusicianshipDescriptionBinary[k])
   a <- as.character(D$SampleAgeMean[k])
   g <- as.character(D$gender_balance[k])
+  y <- as.character(D$Year[k])
   tmp <- stringi::stri_trans_general(tmp,"latin-ascii")
   if(!is.na(tmp)){
     kw<-str_split(tmp,'[;,]', simplify = TRUE)
@@ -82,6 +84,7 @@ for (k in 1:nrow(D)) {
     m_index<-c(m_index,rep(m,length(kw)))
     a_index<-c(a_index,rep(a,length(kw)))
     g_index<-c(g_index,rep(g,length(kw)))
+    year_index<-c(year_index,rep(y,length(kw)))
     WEOG_index<-c(WEOG_index,rep(WEOG,length(kw)))
   }
 }
@@ -91,6 +94,7 @@ head(d_index)
 head(WEOG_index)
 head(a_index)
 head(g_index)
+head(year_index)
 
 KW<-stringi::stri_trans_general(KW,"latin-ascii")
 
@@ -111,9 +115,10 @@ head(t,30)
 
 #write.csv(table(KW),file = 'kw_tmp.csv')
 
-data <- data.frame(KW,WEOG_index,a_index,u_index,m_index,o_index,g_index)
+data <- data.frame(KW,WEOG_index,a_index,u_index,m_index,o_index,g_index,year_index)
 head(data)
 data$a_index_n<-as.numeric(data$a_index)
+data$year_index<-as.numeric(data$year_index)
 data$a_index_nB<-cut(data$a_index_n,breaks = c(0,median(data$a_index_n,na.rm = T),100),labels = c('Young','Old'))
 table(data$a_index_nB)
 
@@ -250,3 +255,47 @@ print(Ga)
 if(plotflag==TRUE){
   ggsave(filename = 'figure3.pdf',Ga,device = 'pdf',width = 14,height = 15)
 }
+
+#### Additional analyses ------------------
+# keyword per year per WEIRD
+#head(data)
+
+# take the most common (N) keywords
+N<-10
+top <- summarise(group_by(data,KW),Freq=n())
+#head(top)
+top<-drop_na(top)
+top<-dplyr::arrange(top,-Freq)
+head(top,10)
+top10KW <- top$KW[1:N]
+top10KW
+data_filtered <-dplyr::filter(data,KW %in% top10KW)
+
+# create empty data frame
+x10e<-2010:2022
+x10e<-expand.grid(KW=top10KW,WEOG_index=c('Non-WEOG','WEOG'),year_index=x10e)
+x10e$Freq<-0
+x10 <- summarise(group_by(data_filtered,KW,WEOG_index,year_index),Freq=n())
+x10<-rbind(x10,x10e)
+
+x10<-dplyr::arrange(x10,-Freq)
+#head(x10,25)
+#x10<-drop_na(x10)
+x10$KW<-factor(x10$KW,levels = top10KW)
+x10$WEOG_index<-factor(x10$WEOG_index,levels = c('Non-WEOG','WEOG'),labels = c('Non-WEIRD','WEIRD'))
+#head(x10)
+#max(x10$year_index)
+
+g10a<-ggplot(data = x10, aes(x = year_index,y=Freq,fill=WEOG_index)) + 
+  geom_col(position = 'dodge',color='black') +
+  facet_wrap(~KW,scales = 'free_y',nrow = 5)+
+  theme(text = element_text(size=16)) +
+  scale_fill_manual(name="Group",values = c('#E41A1C','#377EB8'))+
+  scale_x_continuous(breaks=seq(2000,2022,2))+
+  ylab("Number of articles")+
+  xlab("Year")+
+  theme_linedraw(base_size = 15,base_family = 'Times')+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank())
+print(g10a)
+
+#ggsave(filename = 'figure4.pdf',g10a,device = 'pdf',width = 16,height = 12)
