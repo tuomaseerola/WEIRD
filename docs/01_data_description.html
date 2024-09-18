@@ -210,6 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link active" data-scroll-target="#data-pre-processing">Data pre-processing</a>
   <ul class="collapse">
+  <li><a href="#data-and-scripts" id="toc-data-and-scripts" class="nav-link" data-scroll-target="#data-and-scripts">Data and scripts</a></li>
   <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
   <li><a href="#preprocess" id="toc-preprocess" class="nav-link" data-scroll-target="#preprocess">Preprocess</a>
   <ul class="collapse">
@@ -228,6 +229,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="data-pre-processing" class="level1">
 <h1>Data pre-processing</h1>
+<section id="data-and-scripts" class="level2">
+<h2 class="anchored" data-anchor-id="data-and-scripts">Data and scripts</h2>
+<ul>
+<li><a href="https://github.com/tuomaseerola/WEIRD/blob/main/data.zip">data.zip</a></li>
+<li><a href="https://github.com/tuomaseerola/WEIRD/blob/main/scripts.zip">scripts.zip</a></li>
+</ul>
+</section>
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
 <div class="cell">
@@ -236,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The manually annotated data titled <code>data/WEIRD coding final corr names.csv</code> was cleaned through process captured in <code>weird data cleaning.R</code> script.</p>
-<p>Here we take this manually annotated and cleaned data, <a href="`data/WEIRD_06_05_2024.csv`">data/WEIRD_06_05_2024.csv</a>.</p>
+<p>Here we take this manually annotated and cleaned data, <code>data/WEIRD_06_05_2024.csv</code>.</p>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/WEIRD_06_05_2024.csv'</span>,<span class="at">header =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(d[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="table">
