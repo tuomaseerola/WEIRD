@@ -1,8 +1,8 @@
 ---
 format: 
   html:
-    fig-width: 14
-    fig-height: 14
+    fig-width: 16
+    fig-height: 16
 ---
 
 ## Keywords
