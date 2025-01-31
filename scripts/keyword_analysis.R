@@ -6,8 +6,8 @@
 #### Custom functions -------------------
 source('scripts/count2category.R')
 source('scripts/count2category2.R')
-
-plotflag <- FALSE
+source('scripts/count2category3.R')
+plotflag <- TRUE
 
 ## remove studies, keep articles (to avoid duplicating keywords)
 D <- dplyr::filter(d, study_id == 'study1') # 1360 articles (1360 correct!)
@@ -45,7 +45,7 @@ D$SampleMusicianshipDescriptionBinary <- factor(
     "non-musicians",
     "Not specified"
   ),
-  labels = c("musicians", "musicians", "non-musicians", "Not specified")
+  labels = c("musicians", "both", "non-musicians", "Not specified")
 )
 #### 4. specify Western -------------------------
 D$MusicOriginCountry[is.na(D$MusicOriginCountry)] <- 'Not specified'
@@ -121,6 +121,8 @@ data$a_index_nB <- cut(
   labels = c('Young', 'Old')
 )
 
+table(data$m_index) # include both
+
 #### REVISION IDEA: EXPLICIT MENTION OF NA / not specified
 table(data$o_index) # This is fine, 3 categories
 # REVISION % Western music % University samples
@@ -138,13 +140,15 @@ x1 <- count2category(data,
                      str1 = "WEOG",
                      str2 = "Non-WEOG")
 #x2 <- count2category(data, index="m_index", str1="musicians", str2="others")
-x2b <- count2category2(
+x2b <- count2category3(
   data,
   index = "m_index",
   str1 = "musicians",
-  str2 = "non-musicians",
-  str3 = "Not specified"
+  str2 = "both",
+  str3 = "non-musicians",
+  str4 = "Not specified"
 )
+head(x2b)
 #x3 <- count2category(data, index="o_index", str1="western", str2="other")
 x3b <- count2category2(
   data,
@@ -182,23 +186,24 @@ x5 <- drop_na(x5)
 FROM <- 1
 TO <- 25
 
+#### subplot 1 ----------
 g1a <- ggplot(data = x1[FROM:TO, ], aes(
   x = reorder(KW, prop),
-  y = prop - .5,
+  y = prop,
   label = Freq
 )) +
   geom_col(fill = 'grey70', color = 'grey10') +
-  geom_text(nudge_y = .027, family = 'Times') +
-  coord_flip() +
+  geom_text(nudge_y = .0127, family = 'Times',size=3.0) +
   theme(text = element_text(size = 16)) +
   scale_y_continuous(
-    breaks = seq(-.5, .5, .1),
-    labels = (seq(-.5, .5, .10) + .5) * 100,
-    limits = c(-.5, .5)
+    breaks = seq(0, 1, .1),
+    labels = (seq(0, 1, .1)) * 100
   ) +
   scale_fill_grey() +
+  coord_flip(ylim = c(.45,1)) +
   ylab("% WEIRD") +
   xlab("Keyword (ranked)") +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "black") +
   theme_linedraw(base_size = 15, base_family = 'Times') +
   theme(
     panel.border = element_blank(),
@@ -206,34 +211,44 @@ g1a <- ggplot(data = x1[FROM:TO, ], aes(
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "black")
   )
-#g1a
+g1a
 
-g2a <- ggplot(data = x2b[FROM:TO, ], aes(
+### subplot 2 ----
+#x2b
+x2b<-x2b[FROM:TO, ]
+
+#head(x2b)
+x2b$musiciansp<-x2b$musicians/x2b$Freq
+x2b$bothp<-x2b$both/x2b$Freq
+x2b$nonmusiciansp<-x2b$`non-musicians`/x2b$Freq
+x2b$notspecifiedp<-x2b$`Not specified`/x2b$Freq
+#head(x2b)
+X2b <- pivot_longer(x2b, cols = c(musiciansp, bothp, nonmusiciansp, notspecifiedp))
+X2b$name <- factor(X2b$name, levels = c('musiciansp', 'bothp', 'nonmusiciansp', 'notspecifiedp'),labels = c('Musicians','Both','Non-musicians', 'Unspecified'))
+#head(X2b)
+
+X2b$name <- factor(X2b$name, levels = c('Unspecified', 'Non-musicians', 'Both','Musicians'))
+#head(X2b)
+
+g2a <- ggplot(data = X2b, aes(
   x = reorder(KW, prop),
-  y = prop,
-  label = Freq
+  y = value,
+  fill = name,
+  label = Freq*value
 )) +
-  geom_col(fill = 'grey70', color = 'grey10') +
-  geom_text(nudge_y = .027, family = 'Times') +
-  geom_text(
-    aes(
-      x = reorder(KW, prop),
-      y = prop,
-      label = paste0('[NA=', format(round(notspecified, 2) * 100), '%]')
-    ),
-    nudge_y = .100,
-    size = 2.5,
-    family = 'Times'
-  ) +
+  geom_col(color = 'grey10') +
+  geom_text(position = position_stack(vjust = 0.5), family = 'Times',size=3.0) +
   coord_flip() +
   theme(text = element_text(size = 16)) +
   scale_y_continuous(
     breaks = seq(0, 1, .1),
     labels = (seq(0, 1, .10)) * 100,
-    limits = c(0, 1)
+    limits = c(0, 1),
+    expand = c(0, 0)
   ) +
-  scale_fill_brewer(palette = "Dark2") +
-  ylab("% Musicians") +
+#  scale_fill_brewer(palette = "Dark2") +
+  scale_fill_grey(name='Musical\nexpertise', start = 1.0,end = .4, guide = guide_legend(reverse = TRUE)) +
+  ylab("% Musical expertise") +
   xlab("Keyword (ranked)") +
   theme_linedraw(base_size = 15, base_family = 'Times') +
   theme(
@@ -242,34 +257,47 @@ g2a <- ggplot(data = x2b[FROM:TO, ], aes(
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "black")
   )
+#  theme(legend.position="top")
+
 #g2a
+# ggsave(
+#   filename = 'tmp2.pdf',
+#   g2a,
+#   device = 'pdf',
+#   width = 9,
+#   height = 7
+# )
+### revised ends here ----
 
-g3a <- ggplot(data = x3b[FROM:TO, ], aes(
+#### subplot 3 -------
+#head(x3b)
+x3b<-x3b[FROM:TO, ]
+x3b$westernp<-x3b$western/x3b$Freq
+x3b$nonwesternp<-x3b$`non-western`/x3b$Freq
+x3b$otherp<-x3b$other/x3b$Freq
+names(x3b)
+X3b <- pivot_longer(x3b, cols = c("westernp", "nonwesternp", "otherp"))
+X3b$name <- factor(X3b$name, levels = c('otherp','nonwesternp','westernp'),labels = c('Unspecified', 'Non-Western', 'Western'))
+head(X3b)
+
+g3a <- ggplot(data = X3b, aes(
   x = reorder(KW, prop),
-  y = prop,
-  label = Freq
+  y = value,
+  fill = name,
+  label = Freq*value
 )) +
-  geom_col(fill = 'grey70', color = 'grey10') +
-  geom_text(nudge_y = .027, family = 'Times') +
-  geom_text(
-    aes(
-      x = reorder(KW, prop),
-      y = prop,
-      label = paste0('[NA=', format(round(notspecified, 2) * 100), '%]')
-    ),
-    nudge_y = .095,
-    size = 2.5,
-    family = 'Times'
-  ) +
+  geom_col(color = 'grey10') +
+  geom_text(position = position_stack(vjust = 0.5), family = 'Times',size=3.0) +
   coord_flip() +
   theme(text = element_text(size = 16)) +
   scale_y_continuous(
     breaks = seq(0, 1, .1),
     labels = (seq(0, 1, .10)) * 100,
-    limits = c(0, 1)
+    limits = c(0, 1),
+    expand = c(0, 0)
   ) +
-  scale_fill_brewer(palette = "Dark2") +
-  ylab("% Western music") +
+  scale_fill_grey(name='Music\norigin', start = 1.0,end = .4, guide = guide_legend(reverse = TRUE)) +
+  ylab("% Music origin") +
   xlab("Keyword (ranked)") +
   theme_linedraw(base_size = 15, base_family = 'Times') +
   theme(
@@ -278,34 +306,41 @@ g3a <- ggplot(data = x3b[FROM:TO, ], aes(
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "black")
   )
-#g3a
+#  theme(legend.position="bottom")
+g3a
 
-g4a <- ggplot(data = x4[FROM:TO, ], aes(
+#### subplot 4 -------
+x4b<-x4[FROM:TO, ]
+head(x4b)
+x4b$universityp<-x4b$university/x4b$Freq
+x4b$othersp<-x4b$others/x4b$Freq
+x4b$notspecifiedp<-x4b$`Not specified`/x4b$Freq
+
+X4b <- pivot_longer(x4b, cols = c(universityp, othersp, notspecifiedp))
+X4b$name <- factor(X4b$name, levels = c('universityp', 'othersp', 'notspecifiedp'),labels = c('University', 'Others', 'Unspecified'))
+head(X4b)
+
+X4b$name <- factor(X4b$name, levels = c('Unspecified', 'Others', 'University'))
+head(X4b)
+
+g4a <- ggplot(data = X4b, aes(
   x = reorder(KW, prop),
-  y = prop,
-  label = Freq
+  y = value,
+  fill = name,
+  label = Freq*value
 )) +
-  geom_col(fill = 'grey70', color = 'grey10') +
-  geom_text(nudge_y = .027, family = 'Times') +
-  geom_text(
-    aes(
-      x = reorder(KW, prop),
-      y = prop,
-      label = paste0('[NA=', format(round(notspecified, 2) * 100), '%]')
-    ),
-    nudge_y = .095,
-    size = 2.5,
-    family = 'Times'
-  ) +
+  geom_col(color = 'grey10') +
+  geom_text(position = position_stack(vjust = 0.5), family = 'Times',size=3.0) +
   coord_flip() +
   theme(text = element_text(size = 16)) +
   scale_y_continuous(
     breaks = seq(0, 1, .1),
     labels = (seq(0, 1, .10)) * 100,
-    limits = c(0, 1)
+    limits = c(0, 1),
+    expand = c(0, 0)
   ) +
-  scale_fill_brewer(palette = "Dark2") +
-  ylab("% University samples") +
+  scale_fill_grey(name='Sample\ndescription', start = 1.0,end = .4, guide = guide_legend(reverse = TRUE)) +
+  ylab("% Sample description") +
   xlab("Keyword (ranked)") +
   theme_linedraw(base_size = 15, base_family = 'Times') +
   theme(
@@ -314,7 +349,10 @@ g4a <- ggplot(data = x4[FROM:TO, ], aes(
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "black")
   )
-#g4a
+#  theme(legend.position="bottom")
+g4a
+
+#### subplot 5 --------
 
 Md <- median(x5$prop, na.rm = TRUE)
 g5a <- ggplot(data = x5[FROM:TO, ], aes(
@@ -323,7 +361,7 @@ g5a <- ggplot(data = x5[FROM:TO, ], aes(
   label = Freq
 )) +
   geom_col(fill = 'grey70', color = 'grey10') +
-  geom_text(nudge_y = 0.70, family = 'Times') +
+  geom_text(nudge_y = 0.70, family = 'Times',size=3.0) +
   coord_flip() +
   theme(text = element_text(size = 16)) +
   scale_y_continuous(breaks = seq(-15, 15, 5), limits = c(-18, 17)) +
@@ -337,25 +375,28 @@ g5a <- ggplot(data = x5[FROM:TO, ], aes(
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "black")
   )
-#g5a
+g5a
 
+#### subplot 6 ---------
+head(x6)
 g6a <- ggplot(data = x6[FROM:TO, ], aes(
   x = reorder(KW, prop),
-  y = prop - .5,
+  y = prop,
   label = Freq
 )) +
   geom_col(fill = 'grey70', color = 'grey10') +
-  geom_text(nudge_y = .0033, family = 'Times') +
-  coord_flip() +
+  geom_text(nudge_y = .0033, family = 'Times',size=3.0) +
   theme(text = element_text(size = 16)) +
   scale_y_continuous(
-    breaks = seq(-.5, .5, .05),
-    labels = (seq(-.5, .5, .05) + .5) * 100,
-    limits = c(-.10, .12)
+    breaks = seq(0, 1, .05),
+    labels = (seq(0, 1, .05)) * 100
+#    limits = c(0, .6)
   ) +
   scale_fill_brewer(palette = "Dark2") +
   ylab("% Female participants") +
   xlab("Keyword (ranked)") +
+  coord_flip(ylim = c(0.4,0.6)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "black") +
   theme_linedraw(base_size = 15, base_family = 'Times') +
   theme(
     panel.border = element_blank(),
@@ -363,9 +404,9 @@ g6a <- ggplot(data = x6[FROM:TO, ], aes(
     panel.grid.minor = element_blank(),
     axis.line = element_line(colour = "black")
   )
-#g6a
+g6a
 
-Figure3 <- cowplot::plot_grid(g1a, g2a, g3a, g4a, g5a, g6a, nrow = 3, ncol = 2)
+Figure3 <- cowplot::plot_grid(g1a, g2a, g3a, g4a, g5a, g6a, nrow = 3, ncol = 2,labels = 'AUTO')
 print(Figure3)
 
 if (plotflag == TRUE) {
@@ -426,7 +467,7 @@ print(Figure4)
 
 if (plotflag == TRUE) {
   ggsave(
-    filename = 'figure4.pdf',
+    filename = 'figure4_R2.pdf',
     Figure4,
     device = 'pdf',
     width = 16,

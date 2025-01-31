@@ -2,6 +2,7 @@
 # compare basic properties across WEIRD and non-WEIRD countries
 # WEIRD article
 # T. Eerola, 23/3/2024
+# Revised 19/12/2024 (paper R2)
 # Status: Complete
 
 #### 0. Define functions ---------
@@ -226,7 +227,7 @@ x<-chisq.test(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_co
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 
-#### ROW7 2: musicians and musicians and non-musicians --------
+#### ROW6 2: musicians and musicians and non-musicians --------
 cat('\n musicians and non-musicians:\n')
 
 tmp <- dplyr::select(DF,sample_country_data_collected_WEOG,SampleMusicianshipDescription)
@@ -293,7 +294,7 @@ set.seed(42)
 x<-chisq.test(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
-#### ROW8 3: non-musicians --------
+#### ROW6 3: non-musicians --------
 cat('\n Solely Non-musicians:\n')
 tmp <- dplyr::select(DF,sample_country_data_collected_WEOG,SampleMusicianshipDescription)
 tmp$SampleMusicianshipDescription[is.na(tmp$SampleMusicianshipDescription)]<-'Not specified'
@@ -361,7 +362,7 @@ set.seed(42)
 x<-chisq.test(tmp$SampleMusicianshipDescriptionBinary,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
-#### ROW 9 University Sample -------
+#### ROW 7 University Sample -------
 cat('\n University sample:\n')
 DF$SampleOtherDescription[is.na(DF$SampleOtherDescription)]<-'Not specified'
 
@@ -443,95 +444,8 @@ set.seed(42)
 x<-chisq.test(tmp$uni,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
-
-#####ROW 10 - KJ added- SAMPLE DESCRIP UNSPECIFIED #########################
-
-cat('\n Sample unspecified:\n')
-DF$SampleOtherDescription[is.na(DF$SampleOtherDescription)]<-'Not specified'
-
-#table(D$SampleOtherDescription)
-sum(table(DF$SampleOtherDescription))
-sum(table(DF$sample_country_data_collected_WEOG))
-table(DF$SampleOtherDescription,DF$sample_country_data_collected_WEOG)
-table(DF$sample_country_data_collected,DF$sample_country_data_collected_WEOG)
-
-DF$unsp <- str_detect(DF$SampleOtherDescription,'Not specified')
-DF$unsp <- factor(DF$unsp,levels = c("FALSE",'TRUE'),labels = c("others","unsp"))
-table(DF$unsp)
-## university student
-# DF$uni <- str_detect(DF$SampleOtherDescription,'universi')
-# t<-table(DF$uni)
-# t<-round(t/sum(t)*100)
-# t
-# ## university student
-# DF$uni <- str_detect(DF$SampleOtherDescription,'undergra')
-# t<-table(DF$uni)
-# t<-round(t/sum(t)*100)
-# t
-# DF$uni <- str_detect(DF$SampleOtherDescription,'chil|infan')
-# t<-table(DF$uni)
-# t<-round(t/sum(t)*100)
-# t
-# DF$uni <- str_detect(DF$SampleOtherDescription,'chil|infan|undergra|univer')
-# t<-table(DF$uni)
-# t<-round(t/sum(t)*100)
-# t
-
-tmp <- dplyr::select(DF,sample_country_data_collected_WEOG,unsp)
-tmp<-drop_na(tmp)
-
-table(tmp$sample_country_data_collected_WEOG,tmp$unsp)
-expertise1 <- tmp %>% 
-  filter(sample_country_data_collected_WEOG=='WEOG') %>%
-  count(unsp, .drop = F) %>%
-  rename(var = unsp) %>%
-  mutate(var = ordered(var, levels = c("others", "unsp")), label = n)
-expertise1
-
-expertise2 <- tmp %>% 
-  filter(sample_country_data_collected_WEOG=='Non-WEOG') %>%
-  count(unsp, .drop = F) %>%
-  rename(var = unsp) %>%
-  mutate(var = ordered(var, levels = c("others", "unsp")), label = n)
-expertise2
-
-expertise1 <- cbind(expertise1, 
-                    MultinomCI(expertise1$n,
-                               conf.level=0.95,
-                               method="sisonglaz")) %>%
-  rename(prop = est) %>%
-  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
-         abs_string = paste0(n, "/", sum(expertise1$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
-expertise1
-print(paste0(as.character(expertise1$var[2]),' n=',expertise1$n[2],': ',expertise1$string[2]))
-
-expertise2 <- cbind(expertise2, 
-                    MultinomCI(expertise2$n,
-                               conf.level=0.95,
-                               method="sisonglaz")) %>%
-  rename(prop = est) %>%
-  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
-         abs_string = paste0(n, "/", sum(expertise2$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
-expertise2
-print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
-
-expertise1$label<-'WEIRD'
-expertise2$label<-'Non-WEIRD'
-exp<-rbind(expertise1,expertise2)
-print(knitr::kable(exp[,1:6],digits = 2,caption = 'Unspecified samples'))
-
-
-t<-table(tmp$unsp,tmp$sample_country_data_collected_WEOG)
-t
-set.seed(42)
-x<-chisq.test(tmp$unsp,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
-print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
-
-
-
-
-#### ROW 11 Recruitment ----------
-cat('\n Recruitment volunteers:\n')
+#### ROW 8 Recruitment ----------
+cat('\n Recruitment volunteer:\n')
 
 DF$SamplingMethodDescription <- str_replace(DF$SamplingMethodDescription,' ','')
 DF$SamplingMethodDescription[is.na(DF$SamplingMethodDescription)]<-'Not specified'
@@ -595,75 +509,7 @@ t
 x<-chisq.test(tmp$incentive,tmp$sample_country_data_collected_WEOG)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
-#####ROW 12 - KJ added- RECRUITMENT METHOD UNSPECIFIED #########################
-
-cat('\n Recruitment unspecified:\n')
-
-#DF$SamplingMethodDescription <- str_replace(DF$SamplingMethodDescription,' ','')
-#DF$SamplingMethodDescription[is.na(DF$SamplingMethodDescription)]<-'Not specified'
-table(DF$SamplingMethodDescription)
-DF$incentive2<-''
-DF$incentive2[str_detect(DF$SamplingMethodDescription,'credit|paid')]<- 'Paid'
-DF$incentive2[str_detect(DF$SamplingMethodDescription,'^volunteer$')]<- 'Volunteer'
-DF$incentive2[str_detect(DF$SamplingMethodDescription,'^volunteer;other$')]<- 'Volunteer'
-DF$incentive2[str_detect(DF$SamplingMethodDescription,'^other$|^other;other$')]<- 'Other'
-DF$incentive2[str_detect(DF$SamplingMethodDescription,'Not specified')]<- 'Not specified'
-round(table(DF$incentive2)/nrow(DF)*100)
-DF$incentive2 <- factor(DF$incentive2,levels = c("Not specified","Other","Paid","Volunteer"),labels = c("Not specified","others","others","others"))
-table(DF$incentive2)
-table(DF$incentive2,DF$sample_country_data_collected_WEOG)
-
-tmp<-dplyr::select(DF,sample_country_data_collected_WEOG,incentive2)
-tmp<-drop_na(tmp)
-table(tmp$sample_country_data_collected_WEOG,tmp$incentive2)
-expertise1 <- tmp %>% 
-  filter(sample_country_data_collected_WEOG=='WEOG') %>%
-  count(incentive2, .drop = F) %>%
-  rename(var = incentive2) %>%
-  mutate(var = ordered(var, levels = c("Not specified", "others")), label = n)
-expertise1
-
-expertise2 <- tmp %>% 
-  filter(sample_country_data_collected_WEOG=='Non-WEOG') %>%
-  count(incentive2, .drop = F) %>%
-  rename(var = incentive2) %>%
-  mutate(var = ordered(var, levels = c("Not specified", "others")), label = n)
-expertise2
-
-expertise1 <- cbind(expertise1, 
-                    MultinomCI(expertise1$n,
-                               conf.level=0.95,
-                               method="sisonglaz")) %>%
-  rename(prop = est) %>%
-  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
-         abs_string = paste0(n, "/", sum(expertise1$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
-expertise1
-print(paste0(as.character(expertise1$var[1]),' n=',expertise1$n[1],': ',expertise1$string[1]))
-
-expertise2 <- cbind(expertise2, 
-                    MultinomCI(expertise2$n,
-                               conf.level=0.95,
-                               method="sisonglaz")) %>%
-  rename(prop = est) %>%
-  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
-         abs_string = paste0(n, "/", sum(expertise2$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
-expertise2
-print(paste0(as.character(expertise2$var[1]),' n=',expertise2$n[1],': ',expertise2$string[1]))
-
-expertise1$label<-'WEIRD'
-expertise2$label<-'Non-WEIRD'
-exp<-rbind(expertise1,expertise2)
-print(knitr::kable(exp[,1:6],digits = 2,caption = 'recruitment unspecified samples'))
-
-
-t<-table(tmp$incentive2,tmp$sample_country_data_collected_WEOG)
-t
-x<-chisq.test(tmp$incentive2,tmp$sample_country_data_collected_WEOG)
-print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
-
-
-
-#### ROW 13 Experimenter Created Music ----------
+#### ROW 9 Experimenter Created Music ----------
 cat('\n Experimenter Created Music:\n')
 DM <- dplyr::filter(d,musicstudies==TRUE)
 dim(DM)
@@ -732,7 +578,7 @@ t
 x<-chisq.test(tmp$source,tmp$CountryDataCollected_WEOG)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
-#### ROW 14: Music Origin ----------
+#### ROW 10: Music Origin ----------
 cat('\n Western music:\n')
 table(DM$MusicOriginCountry)
 DM$MusicOriginCountry[is.na(DM$MusicOriginCountry)]<-'Not specified'
@@ -756,7 +602,7 @@ DM$origin[str_detect(DM$origin,'X ')]<- 'Non-Western'
 #table(D$origin,D$MusicOriginCountry)
 #x<-data.frame(D$MusicOriginCountry,D$origin)
 #x
-
+dim(DM)
 DM$origin <- factor(DM$origin,levels = c("Non-Western","Not specified","Western"),labels = c("other","other","western"))
 table(DM$origin)
 table(DM$origin,DM$CountryDataCollected_WEOG)
@@ -809,50 +655,33 @@ sum(t)
 x<-chisq.test(tmp$origin,tmp$CountryDataCollected_WEOG)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
-#### KJ added: ROW 15: Music Origin Unspecified ----------
-cat('\n Music origin unspecified:\n')
-table(DM$MusicOriginCountry)
-#DM$MusicOriginCountry[is.na(DM$MusicOriginCountry)]<-'Not specified'
-#table(DM$MusicOriginCountry)
+#### New addition -----
+#### 1 Sample description not specified -----
+cat('\n Sample description:\n')
+DF$SampleOtherDescription[is.na(DF$SampleOtherDescription)]<-'Not specified'
 
-# Western = Purely Western
-# Check!
+table(DF$SampleOtherDescription)
+sum(table(DF$SampleOtherDescription))
+DF$SampleOtherDescription[DF$SampleOtherDescription!='Not specified']<-'Defined'
 
-DM$origin2<-'X'
-DM$origin2<-paste('X',DM$MusicOriginCountry)
-DM$origin2[str_detect(DM$MusicOriginCountry,'^Western$')]<- 'Western'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Africa')]<- 'Non-Western'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Not specified')]<- 'Not specified'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Portugal')]<- 'Western'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Estonia')]<- 'Western'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Hungary')]<- 'Western'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Spain')]<- 'Western'
-DM$origin2[str_detect(DM$MusicOriginCountry,'Australia')]<- 'Non-Western' # CHECK, if abo
-DM$origin2[str_detect(DM$origin2,'X ')]<- 'Non-Western'
+table(DF$SampleOtherDescription,DF$sample_country_data_collected_WEOG)
 
-#table(D$origin,D$MusicOriginCountry)
-#x<-data.frame(D$MusicOriginCountry,D$origin)
-#x
-
-DM$origin2 <- factor(DM$origin2,levels = c("Non-Western","Not specified","Western"),labels = c("other","Not specified","other"))
-table(DM$origin2)
-table(DM$origin2,DM$CountryDataCollected_WEOG)
-
-tmp<-dplyr::select(DM,CountryDataCollected_WEOG,origin2)
+tmp <- dplyr::select(DF,sample_country_data_collected_WEOG,SampleOtherDescription)
 tmp<-drop_na(tmp)
-table(tmp$CountryDataCollected_WEOG,tmp$origin2)
+
+table(tmp$sample_country_data_collected_WEOG,tmp$SampleOtherDescription)
 expertise1 <- tmp %>% 
-  filter(CountryDataCollected_WEOG=='WEOG') %>%
-  count(origin2, .drop = F) %>%
-  rename(var = origin2) %>%
-  mutate(var = ordered(var, levels = c("other", "Not specified")), label = n)
+  filter(sample_country_data_collected_WEOG=='WEOG') %>%
+  count(SampleOtherDescription, .drop = F) %>%
+  rename(var = SampleOtherDescription) %>%
+  mutate(var = ordered(var, levels = c("Defined", "Not specified")), label = n)
 expertise1
 
 expertise2 <- tmp %>% 
-  filter(CountryDataCollected_WEOG=='Non-WEOG') %>%
-  count(origin2, .drop = F) %>%
-  rename(var = origin2) %>%
-  mutate(var = ordered(var, levels = c("other", "Not specified")), label = n)
+  filter(sample_country_data_collected_WEOG=='Non-WEOG') %>%
+  count(SampleOtherDescription, .drop = F) %>%
+  rename(var = SampleOtherDescription) %>%
+  mutate(var = ordered(var, levels = c("Defined", "Not specified")), label = n)
 expertise2
 
 expertise1 <- cbind(expertise1, 
@@ -878,14 +707,213 @@ print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertis
 expertise1$label<-'WEIRD'
 expertise2$label<-'Non-WEIRD'
 exp<-rbind(expertise1,expertise2)
-print(knitr::kable(exp[,1:6],digits = 2,caption = 'Music origin unspecified'))
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Sample description unspecified'))
 
-t<-table(tmp$origin2,tmp$CountryDataCollected_WEOG)
+
+t<-table(tmp$SampleOtherDescription,tmp$sample_country_data_collected_WEOG)
 t
-sum(t)
-x<-chisq.test(tmp$origin2,tmp$CountryDataCollected_WEOG)
+set.seed(42)
+x<-chisq.test(tmp$SampleOtherDescription,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
 print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
 
 
+#### 2 Recruitment method unspecified ------
+cat('\n Recruitment method:\n')
+DF$SamplingMethodDescription[is.na(DF$SamplingMethodDescription)]<-'Not specified'
 
+table(DF$SamplingMethodDescription)
+sum(table(DF$SamplingMethodDescription))
+DF$SamplingMethodDescription[DF$SamplingMethodDescription!='Not specified']<-'Defined'
+
+table(DF$SamplingMethodDescription,DF$sample_country_data_collected_WEOG)
+
+tmp <- dplyr::select(DF,sample_country_data_collected_WEOG,SamplingMethodDescription)
+tmp<-drop_na(tmp)
+
+table(tmp$sample_country_data_collected_WEOG,tmp$SamplingMethodDescription)
+expertise1 <- tmp %>% 
+  filter(sample_country_data_collected_WEOG=='WEOG') %>%
+  count(SamplingMethodDescription, .drop = F) %>%
+  rename(var = SamplingMethodDescription) %>%
+  mutate(var = ordered(var, levels = c("Defined", "Not specified")), label = n)
+expertise1
+
+expertise2 <- tmp %>% 
+  filter(sample_country_data_collected_WEOG=='Non-WEOG') %>%
+  count(SamplingMethodDescription, .drop = F) %>%
+  rename(var = SamplingMethodDescription) %>%
+  mutate(var = ordered(var, levels = c("Defined", "Not specified")), label = n)
+expertise2
+
+expertise1 <- cbind(expertise1, 
+                    MultinomCI(expertise1$n,
+                               conf.level=0.95,
+                               method="sisonglaz")) %>%
+  rename(prop = est) %>%
+  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
+         abs_string = paste0(n, "/", sum(expertise1$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
+expertise1
+print(paste0(as.character(expertise1$var[2]),' n=',expertise1$n[2],': ',expertise1$string[2]))
+
+expertise2 <- cbind(expertise2, 
+                    MultinomCI(expertise2$n,
+                               conf.level=0.95,
+                               method="sisonglaz")) %>%
+  rename(prop = est) %>%
+  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
+         abs_string = paste0(n, "/", sum(expertise2$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
+expertise2
+print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
+
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Sample recruitment unspecified'))
+
+
+t<-table(tmp$SamplingMethodDescription,tmp$sample_country_data_collected_WEOG)
+t
+set.seed(42)
+x<-chisq.test(tmp$SamplingMethodDescription,tmp$sample_country_data_collected_WEOG,simulate.p.value = T)
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
+
+
+#### 3 Music origin country unspecified ----------
+cat('\n Music origin country unspecified:\n')
+DM <- dplyr::filter(d,musicstudies==TRUE)
+dim(DM)
+DM<-ungroup(DM)
+
+DM$MusicSource[is.na(DM$MusicSource)]<-'Not specified'
+table(DM$MusicOriginCountry)
+DM$MusicOriginCountry[is.na(DM$MusicOriginCountry)]<-'Not specified'
+table(DM$MusicOriginCountry)
+
+DM$origin<-'X'
+DM$origin<-paste('X',DM$MusicOriginCountry)
+DM$origin[str_detect(DM$MusicOriginCountry,'^Western$')]<- 'Western'
+DM$origin[str_detect(DM$MusicOriginCountry,'Africa')]<- 'Non-Western'
+DM$origin[str_detect(DM$MusicOriginCountry,'Not specified')]<- 'Not specified'
+DM$origin[str_detect(DM$MusicOriginCountry,'Portugal')]<- 'Western'
+DM$origin[str_detect(DM$MusicOriginCountry,'Estonia')]<- 'Western'
+DM$origin[str_detect(DM$MusicOriginCountry,'Hungary')]<- 'Western'
+DM$origin[str_detect(DM$MusicOriginCountry,'Spain')]<- 'Western'
+DM$origin[str_detect(DM$MusicOriginCountry,'Australia')]<- 'Non-Western' # CHECK, if abo
+DM$origin[str_detect(DM$origin,'X ')]<- 'Non-Western'
+
+#table(D$origin,D$MusicOriginCountry)
+#x<-data.frame(D$MusicOriginCountry,D$origin)
+#x
+dim(DM)
+DM <- drop_na(DM,origin,CountryDataCollected_WEOG)
+table(DM$origin)
+T<-table(DM$origin,DM$CountryDataCollected_WEOG)
+T
+x<-MultinomCI(c(T))
+x
+x[,1]
+
+s<-colSums(T)
+s
+s<-s/sum(s)
+s
+x <- chisq.test(x = T[2,],p = s,simulate.p.value = TRUE)
+x
+
+T
+
+
+
+round(table(DM$origin)/sum(table(DM$origin),2)*100)
+tmp<-DM
+# focus on Western
+tmp$origin <- factor(tmp$origin,levels = c("Non-Western","Not specified","Western"),
+                                labels = c("other","other","western"))
+round(table(tmp$origin)/sum(table(tmp$origin),2)*100)
+
+# focus on Not-specified
+#tmp<-DM
+#tmp$origin <- factor(tmp$origin,levels = c("Non-Western","Not specified","Western"),
+#                     labels = c("western","other","western"))
+
+t<-table(tmp$CountryDataCollected_WEOG,tmp$origin)
+sum(table(tmp$CountryDataCollected_WEOG,tmp$origin))
+table(tmp$origin)
+round(t/sum(t),2)
+x<-MultinomCI(c(t))
+x[,1]
+
+expertise1 <- tmp %>% 
+  filter(CountryDataCollected_WEOG=='WEOG') %>%
+  count(origin, .drop = F) %>%
+  rename(var = origin) %>%
+  mutate(var = ordered(var, levels = c("other", "western")), label = n)
+expertise1
+
+expertise2 <- tmp %>% 
+  filter(CountryDataCollected_WEOG=='Non-WEOG') %>%
+  count(origin, .drop = F) %>%
+  rename(var = origin) %>%
+  mutate(var = ordered(var, levels = c("other", "western")), label = n)
+expertise2
+
+expertise1 <- cbind(expertise1, 
+                    MultinomCI(expertise1$n,
+                               conf.level=0.95,
+                               method="sisonglaz")) %>%
+  rename(prop = est) %>%
+  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
+         abs_string = paste0(n, "/", sum(expertise1$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
+expertise1
+print(paste0(as.character(expertise1$var[2]),' n=',expertise1$n[2],': ',expertise1$string[2]))
+
+expertise2 <- cbind(expertise2, 
+                    MultinomCI(expertise2$n,
+                               conf.level=0.95,
+                               method="sisonglaz")) %>%
+  rename(prop = est) %>%
+  mutate(string = paste0(round(prop*100, 0),'% [', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'),
+         abs_string = paste0(n, "/", sum(expertise2$n), ", ", round(prop*100, 0),'% [95% confidence interval, ', round(lwr.ci*100, 0), '% to ', round(upr.ci*100, 0), '%]'))
+expertise2
+print(paste0(as.character(expertise2$var[2]),' n=',expertise2$n[2],': ',expertise2$string[2]))
+
+expertise1$label<-'WEIRD'
+expertise2$label<-'Non-WEIRD'
+exp<-rbind(expertise1,expertise2)
+print(knitr::kable(exp[,1:6],digits = 2,caption = 'Sample recruitment unspecified'))
+
+  # |var     |   n|label     | prop| lwr.ci| upr.ci|
+  # |:-------|---:|:---------|----:|------:|------:|
+  # |other   | 212|WEIRD     | 0.27|   0.24|   0.30|
+  # |western | 572|WEIRD     | 0.73|   0.70|   0.76|
+  # |other   |  71|Non-WEIRD | 0.41|   0.34|   0.48|
+  # |western | 104|Non-WEIRD | 0.59|   0.53|   0.67|
+# unspecified
+  # |var     |   n|label     | prop| lwr.ci| upr.ci|
+  # |:-------|---:|:---------|----:|------:|------:|
+  # |western | 598|WEIRD     | 0.76|   0.73|   0.79|
+  # |other   | 186|WEIRD     | 0.24|   0.21|   0.27|
+  # |western | 140|Non-WEIRD | 0.80|   0.75|   0.86|
+  # |other   |  35|Non-WEIRD | 0.20|   0.15|   0.26|
+
+# redefined chi-square
+t<-table(tmp$origin,tmp$CountryDataCollected_WEOG)
+t
+s<-colSums(t)
+s
+s<-s/sum(s)
+s
+x <- chisq.test(x = t[2,],p = s,simulate.p.value = TRUE)
+
+
+table(DM$origin,DM$CountryDataCollected_WEOG)/959
+
+t<-table(tmp$origin,tmp$CountryDataCollected_WEOG)
+table(tmp$CountryDataCollected_WEOG)/sum(table(tmp$CountryDataCollected_WEOG))
+t
+set.seed(42)
+x<-chisq.test(tmp$origin,tmp$CountryDataCollected_WEOG,simulate.p.value = T)
+print(paste('Chi = ', round(x$statistic,2), ', p-value = ', x$p.value))
+
+#### CLEAN --------
 rm(w,W,tmp,row2a,row2a_p,x,expertise1,expertise2,t,my.function,NW,DM)

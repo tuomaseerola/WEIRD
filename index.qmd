@@ -3,12 +3,16 @@ title: "WEIRD"
 format:
   html:
     code-fold: false
-jupyter: python3
+#jupyter: python3
 toc: false
 ---
 
 
-This repository contains the data and analysis scripts related to manuscript titled _Participant and Musical Diversity in Music Psychology Research_ by Kelly Jakubowski, Nashra Ahmad, James Armitage, Logan Barrett, Aliya Edwards, Elizabeth Galbo, Juan S. Gómez-Cañón, Thomas A. Graves, Akvilė Jadzgevičiūtė, Connor Kirts, Imre Lahdelma, Thomas Lennie, Aliyah Ramatally, Joshua Schlichting, Chara Steliou, Keerthana Vishwanath, & Tuomas Eerola  from [Durham University](https://www.durham.ac.uk) and [Music and Science Lab](https://musicscience.net). 
+This repository contains the data and analysis scripts related to a study titled _Participant and Musical Diversity in Music Psychology Research_ by Jakubowski et al. from [Durham University](https://www.durham.ac.uk) and [Music and Science Lab](https://musicscience.net). 
+
+The APA citation of the paper is:
+
+> Jakubowski, K., Ahmad, N., Armitage, J., Barrett, L., Edwards, A., Galbo, E., Gómez-Cañón, J. S.,  Graves, T. A., Jadzgevičiūtė, A. Kirts, C., Lahdelma, I., Lennie, T., Ramatally, A., Schlichting, J.,  Steliou, C., Vishwanath, K. & Eerola, T. (in press). Participant and Musical Diversity in Music Psychology Research. _Psychology of Music._ [Vol, Issue, pages, URL and DOI to be added] 
 
 The public-facing version of this repository is at [https://tuomaseerola.github.io/WEIRD/](https://tuomaseerola.github.io/WEIRD/).
 
@@ -27,3 +31,4 @@ The public-facing version of this repository is at [https://tuomaseerola.github.
 
 - [6 Alternative analyses](06_alternative_analyses.qmd)
 
+Last edit: 31 January 2025
