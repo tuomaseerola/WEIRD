@@ -12,7 +12,7 @@ The APA citation of the paper is:
 > Galbo, E., Gómez-Cañón, J. S., Graves, T. A., Jadzgevičiūtė, A. Kirts,
 > C., Lahdelma, I., Lennie, T., Ramatally, A., Schlichting, J., Steliou,
 > C., Vishwanath, K. & Eerola, T. (in press). Participant and Musical
-> Diversity in Music Psychology Research. *Psychology of Music.* \[Vol,
+> Diversity in Music Psychology Research. *Music & Science.* \[Vol,
 > Issue, pages, URL and DOI to be added\]
 
 The public-facing version of this repository is at

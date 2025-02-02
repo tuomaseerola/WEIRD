@@ -10,7 +10,7 @@ This repository contains the data and analysis scripts related to a study titled
 
 The APA citation of the paper is:
 
-> Jakubowski, K., Ahmad, N., Armitage, J., Barrett, L., Edwards, A., Galbo, E., Gómez-Cañón, J. S.,  Graves, T. A., Jadzgevičiūtė, A. Kirts, C., Lahdelma, I., Lennie, T., Ramatally, A., Schlichting, J.,  Steliou, C., Vishwanath, K. & Eerola, T. (in press). Participant and Musical Diversity in Music Psychology Research. _Psychology of Music._ [Vol, Issue, pages, URL and DOI to be added] 
+> Jakubowski, K., Ahmad, N., Armitage, J., Barrett, L., Edwards, A., Galbo, E., Gómez-Cañón, J. S.,  Graves, T. A., Jadzgevičiūtė, A. Kirts, C., Lahdelma, I., Lennie, T., Ramatally, A., Schlichting, J.,  Steliou, C., Vishwanath, K. & Eerola, T. (in press). Participant and Musical Diversity in Music Psychology Research. _Music & Science._ [Vol, Issue, pages, URL and DOI to be added] 
 
 The public-facing version of this repository is at [https://tuomaseerola.github.io/WEIRD/](https://tuomaseerola.github.io/WEIRD/).
 
