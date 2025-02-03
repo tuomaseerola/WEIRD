@@ -18,6 +18,8 @@ The APA citation of the paper is:
 The public-facing version of this repository is at
 <https://tuomaseerola.github.io/WEIRD/>.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14793915.svg)](https://doi.org/10.5281/zenodo.14793915)
+
 ## Contents
 
 - [1 Data description](01_data_description.qmd)
