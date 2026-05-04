@@ -8,14 +8,7 @@ This repository contains the data and analysis scripts related to a study titled
 The public-facing version of this repository is at
 <https://tuomaseerola.github.io/WEIRD/>.
 
-::: {.callout-note collapse="true"}
-## Zenodo
-
-[https://doi.org/10.5281/zenodo.14793915](https://doi.org/10.5281/zenodo.14793915)
-
-:::
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14793915.svg)](https://doi.org/10.5281/zenodo.14793915)
+Archived version is available at [Zenodo](https://doi.org/10.5281/zenodo.14793915)
 
 ## Contents
 
